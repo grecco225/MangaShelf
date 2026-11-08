@@ -1,0 +1,63 @@
+{
+  "name": "MangaShelf — Organizador y Lector Digital",
+  "short_name": "MangaShelf",
+  "description": "Organizador de biblioteca y lector digital de manga y cómic con soporte sin conexión (Demo PWA).",
+  "lang": "es-ES",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0b0e14",
+  "theme_color": "#111622",
+  "categories": ["books", "entertainment", "utilities"],
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Mi Biblioteca",
+      "short_name": "Biblioteca",
+      "description": "Abrir tus series guardadas en MangaShelf",
+      "url": "./index.html#library",
+      "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Explorar Catálogo Demo",
+      "short_name": "Explorar",
+      "description": "Descubrir obras ficticias de demostración",
+      "url": "./index.html#explore",
+      "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Historial de Lectura",
+      "short_name": "Historial",
+      "description": "Retomar el último capítulo leído",
+      "url": "./index.html#history",
+      "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "mangashelf-pwa",
+  "version": "1.0.0",
+  "description": "MangaShelf — Organizador y lector digital de manga y cómic instalable como PWA (Demo con contenido ficticio)",
+  "private": true,
+  "scripts": {
+    "start": "python server.py 8080",
+    "serve": "npx --yes serve . -l 8080"
+  }
+}

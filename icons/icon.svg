@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#121624"/>
+      <stop offset="50%" stop-color="#1a1f36"/>
+      <stop offset="100%" stop-color="#271f54"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7c5cff"/>
+      <stop offset="100%" stop-color="#00d4aa"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
+  <rect x="24" y="24" width="464" height="464" rx="92" fill="none" stroke="#7c5cff" stroke-width="6" stroke-opacity="0.35"/>
+  <!-- Open Manga Book Emblem -->
+  <path d="M104 148 C164 132, 224 148, 256 172 C288 148, 348 132, 408 148 L408 364 C348 348, 288 364, 256 388 C224 364, 164 348, 104 364 Z" fill="#151a2e" stroke="url(#accentGrad)" stroke-width="18" stroke-linejoin="round"/>
+  <!-- Spine -->
+  <line x1="256" y1="172" x2="256" y2="388" stroke="#00d4aa" stroke-width="14" stroke-linecap="round"/>
+  <!-- Stylized M / Panel lines -->
+  <path d="M148 220 L196 290 L256 212 L316 290 L364 220" fill="none" stroke="#ffffff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Bookmark Ribbon -->
+  <path d="M332 142 L368 142 L368 232 L350 214 L332 232 Z" fill="#ff5c8a"/>
+</svg>

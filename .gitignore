@@ -1,0 +1,16 @@
+# Secretos y variables de entorno (nunca subir al repositorio)
+.env
+.env.*
+*.pem
+*.key
+
+# Archivos personales o contenido protegido del usuario
+user-imports/
+mis-mangas/
+*.cbr
+
+# Dependencias o cachés del sistema
+node_modules/
+__pycache__/
+.DS_Store
+Thumbs.db
