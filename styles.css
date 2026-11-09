@@ -1922,3 +1922,441 @@ button {
   color: var(--accent-teal);
   border: 1px solid rgba(0, 212, 170, 0.4);
 }
+
+
+/* ==========================================================================
+   MangaShelf v3 PRO — Bootstrap 5 UX, Temas de Color, Animaciones & Retroceso
+   ========================================================================== */
+
+/* 1. Temas Dinámicos de Color Anime */
+html[data-anime-theme="cyber"] {
+  --bg-base: #090b12;
+  --bg-surface: #0f1422;
+  --bg-card: #151c2f;
+  --bg-card-hover: #1d2742;
+  --bg-elevated: #232f4f;
+  --accent-primary: #8b5cf6;
+  --accent-primary-hover: #7c3aed;
+  --accent-teal: #00f0c8;
+  --accent-pink: #ff477e;
+  --accent-amber: #fbbf24;
+  --glow-primary: rgba(139, 92, 246, 0.35);
+  --glow-secondary: rgba(0, 240, 200, 0.22);
+}
+
+html[data-anime-theme="sakura"] {
+  --bg-base: #120910;
+  --bg-surface: #1b0e18;
+  --bg-card: #261422;
+  --bg-card-hover: #331b2e;
+  --bg-elevated: #402239;
+  --accent-primary: #ff477e;
+  --accent-primary-hover: #e11d48;
+  --accent-teal: #ffb3c6;
+  --accent-pink: #fb7185;
+  --accent-amber: #fde047;
+  --glow-primary: rgba(255, 71, 126, 0.38);
+  --glow-secondary: rgba(255, 179, 198, 0.22);
+}
+
+html[data-anime-theme="shonen"] {
+  --bg-base: #0b0f0d;
+  --bg-surface: #111916;
+  --bg-card: #17231e;
+  --bg-card-hover: #1f3029;
+  --bg-elevated: #283e35;
+  --accent-primary: #f59e0b;
+  --accent-primary-hover: #d97706;
+  --accent-teal: #10b981;
+  --accent-pink: #ef4444;
+  --accent-amber: #fbbf24;
+  --glow-primary: rgba(245, 158, 11, 0.35);
+  --glow-secondary: rgba(16, 185, 129, 0.25);
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-base);
+  color: var(--text-main);
+  transition: background-color 0.35s ease, color 0.25s ease;
+}
+
+h1, h2, h3, .brand-name, .stat-value {
+  font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Luces ambientales de fondo */
+.ambient-glow {
+  position: fixed;
+  width: 480px;
+  height: 480px;
+  border-radius: 50%;
+  filter: blur(130px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.45;
+  transition: background 0.5s ease;
+}
+
+.ambient-glow-1 {
+  top: -160px;
+  right: 8%;
+  background: radial-gradient(circle, var(--glow-primary, rgba(139, 92, 246, 0.35)), transparent 70%);
+}
+
+.ambient-glow-2 {
+  bottom: -180px;
+  left: 15%;
+  background: radial-gradient(circle, var(--glow-secondary, rgba(0, 240, 200, 0.22)), transparent 70%);
+}
+
+.app-layout {
+  position: relative;
+  z-index: 1;
+}
+
+/* Barra lateral con glassmorphism */
+.desktop-sidebar {
+  background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-base) 100%);
+  box-shadow: 6px 0 32px rgba(0, 0, 0, 0.45);
+}
+
+.brand-logo-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.brand-live-dot {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--accent-teal);
+  border: 2px solid var(--bg-surface);
+  box-shadow: 0 0 10px var(--accent-teal);
+}
+
+.nav-icon-bi {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.nav-btn {
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-btn:hover {
+  transform: translateX(4px);
+}
+
+.nav-btn.active {
+  background: linear-gradient(135deg, var(--glow-primary, rgba(139, 92, 246, 0.3)), rgba(0, 212, 170, 0.12));
+  border-color: var(--accent-primary);
+  box-shadow: 0 6px 20px -4px var(--glow-primary, rgba(139, 92, 246, 0.35));
+}
+
+/* Selector de tema en el sidebar */
+.theme-picker-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+}
+
+.theme-swatch-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.theme-swatch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 6px 4px;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.theme-swatch:hover {
+  color: var(--text-main);
+  border-color: var(--accent-primary);
+}
+
+.theme-swatch.active {
+  background-color: var(--bg-elevated);
+  color: #fff;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 12px var(--glow-primary);
+}
+
+.swatch-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.swatch-cyber {
+  background: linear-gradient(135deg, #8b5cf6, #00f0c8);
+}
+
+.swatch-sakura {
+  background: linear-gradient(135deg, #ff477e, #ffb3c6);
+}
+
+.swatch-shonen {
+  background: linear-gradient(135deg, #f59e0b, #10b981);
+}
+
+/* Botón Global de Retroceso (Header) y Breadcrumbs */
+.btn-global-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 15px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover));
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.86rem;
+  box-shadow: 0 4px 16px var(--glow-primary, rgba(139, 92, 246, 0.4));
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+  flex-shrink: 0;
+}
+
+.btn-global-back:hover {
+  transform: translateX(-3px) scale(1.03);
+  box-shadow: 0 6px 22px var(--glow-primary, rgba(139, 92, 246, 0.55));
+}
+
+.btn-global-back:active {
+  transform: scale(0.97);
+}
+
+.breadcrumb-nav {
+  margin-bottom: 2px;
+}
+
+.breadcrumb-list {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0;
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.breadcrumb-item-custom {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.breadcrumb-item-custom.clickable {
+  cursor: pointer;
+  color: var(--accent-teal);
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+
+.breadcrumb-item-custom.clickable:hover {
+  text-decoration: underline;
+  opacity: 0.9;
+}
+
+.breadcrumb-sep {
+  opacity: 0.45;
+  font-size: 0.7rem;
+}
+
+/* Botón pulsante MangaDex Live en Header */
+.btn-mangadex-pulse {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ff6b35, #ff3366);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-mangadex-pulse:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 51, 102, 0.5);
+}
+
+/* Botón Flotante de Retroceso Rápido (FAB) */
+.floating-back-fab {
+  position: fixed;
+  bottom: 84px;
+  left: 20px;
+  z-index: 45;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border-radius: 999px;
+  background: rgba(15, 20, 34, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid var(--accent-primary);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.88rem;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55), 0 0 16px var(--glow-primary);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+  animation: fabPopIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.floating-back-fab:hover {
+  transform: translateY(-3px) scale(1.03);
+  background: var(--accent-primary);
+}
+
+@media (min-width: 961px) {
+  .floating-back-fab {
+    left: calc(var(--sidebar-width) + 24px);
+    bottom: 28px;
+  }
+}
+
+/* Animaciones de entrada de vistas y tarjetas */
+@keyframes fabPopIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes cardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes viewFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.view-animate {
+  animation: viewFadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.series-card {
+  animation: cardReveal 0.36s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.26s ease,
+              box-shadow 0.26s ease;
+}
+
+.series-card:hover {
+  transform: translateY(-7px);
+  border-color: var(--accent-primary);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.5), 0 0 22px var(--glow-primary);
+}
+
+.card-cover-img {
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.series-card:hover .card-cover-img {
+  transform: scale(1.06);
+}
+
+/* Panel Hero de MangaDex API en Explorar */
+.mangadex-hero-banner {
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.14) 0%, rgba(139, 92, 246, 0.18) 55%, rgba(0, 240, 200, 0.1) 100%);
+  border: 1px solid rgba(255, 107, 53, 0.38);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  margin-bottom: 22px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.32);
+}
+
+.mangadex-quick-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.md-quick-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  border-radius: 999px;
+  font-size: 0.79rem;
+  font-weight: 700;
+  background-color: rgba(15, 20, 34, 0.75);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.md-quick-chip:hover,
+.md-quick-chip.active {
+  background: linear-gradient(135deg, #ff6b35, var(--accent-primary));
+  color: #ffffff;
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.35);
+}
+
+.mangadex-badge-pill {
+  background: linear-gradient(135deg, #ff6b35, #ff3366);
+  color: #fff;
+  border: none;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+/* Spinner de carga en el lector */
+.reader-loading-spinner {
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(9, 11, 18, 0.82);
+  backdrop-filter: blur(6px);
+  color: var(--text-main);
+  font-weight: 600;
+  font-size: 0.92rem;
+}

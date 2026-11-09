@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mangashelf-pwa-v2.0.0';
+const CACHE_NAME = 'mangashelf-pwa-v3.0.0';
 const USER_DOWNLOADS_CACHE = 'mangashelf-user-downloads-v1';
 
 const CORE_ASSETS = [
@@ -36,7 +36,6 @@ self.addEventListener('activate', (event) => {
       .then((keys) =>
         Promise.all(
           keys
-            // Conservar tanto la caché de la versión actual como la caché de descargas del usuario
             .filter((key) => key !== CACHE_NAME && key !== USER_DOWNLOADS_CACHE)
             .map((key) => caches.delete(key))
         )
@@ -49,38 +48,29 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
 
-  // Navegación principal HTML: Network-first con fallback inmediato a index.html en caché
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then((networkResponse) => {
-          const copy = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put('./index.html', copy));
-          return networkResponse;
-        })
-        .catch(() => caches.match('./index.html') || caches.match('./'))
-    );
-    return;
-  }
-
-  // Para recursos locales y descargas cacheadas: Stale-While-Revalidate
+  // Network-first para mantener siempre actualizada la interfaz y las respuestas de MangaDex API,
+  // con fallback inmediato a caché cuando no hay conexión.
   event.respondWith(
-    caches.match(request).then((cachedResponse) => {
-      const fetchPromise = fetch(request)
-        .then((networkResponse) => {
-          if (
-            networkResponse &&
-            networkResponse.status === 200 &&
-            (networkResponse.type === 'basic' || networkResponse.type === 'cors')
-          ) {
-            const responseClone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
+    fetch(request)
+      .then((networkResponse) => {
+        if (
+          networkResponse &&
+          networkResponse.status === 200 &&
+          (networkResponse.type === 'basic' || networkResponse.type === 'cors')
+        ) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
+        }
+        return networkResponse;
+      })
+      .catch(() =>
+        caches.match(request).then((cached) => {
+          if (cached) return cached;
+          if (request.mode === 'navigate') {
+            return caches.match('./index.html') || caches.match('./');
           }
-          return networkResponse;
+          return null;
         })
-        .catch(() => null);
-
-      return cachedResponse || fetchPromise;
-    })
+      )
   );
 });
