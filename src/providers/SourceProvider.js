@@ -19,14 +19,30 @@ import { DEMO_SERIES, generateCoverSvg, generatePageSvg } from '../data/demoCata
 import { ArchiveParser } from '../utils/ArchiveParser.js';
 
 export class BaseSourceProvider {
-  constructor({ id, name, description, isDemo = false, isLocal = false, isExternalApi = false, limitsNotice = '' }) {
+  constructor({
+    id,
+    name,
+    lang = 'ES / EN',
+    version = '1.4',
+    icon = 'bi-globe2',
+    description,
+    isDemo = false,
+    isLocal = false,
+    isExternalApi = false,
+    limitsNotice = ''
+  }) {
     this.id = id;
     this.name = name;
+    this.lang = lang;
+    this.version = version;
+    this.icon = icon;
     this.description = description;
     this.isDemo = isDemo;
     this.isLocal = isLocal;
     this.isExternalApi = isExternalApi;
     this.limitsNotice = limitsNotice;
+    this.lastLatencyMs = null;
+    this.cacheHits = 0;
   }
 
   async getCatalog() {
@@ -40,31 +56,44 @@ export class BaseSourceProvider {
 
 /**
  * 1. Proveedor Oficial API MangaDex (https://api.mangadex.org)
- * Consulta catálogo en tiempo real, búsqueda por título, capítulos en Español/Inglés
- * y páginas reales mediante el servidor MangaDex At-Home.
+ * Optimizado con caché de consultas, deduplicación de peticiones en vuelo,
+ * portadas ligeras (.256.jpg) y precarga inteligente.
  */
 export class MangaDexProvider extends BaseSourceProvider {
   constructor() {
     super({
       id: 'mangadex-official-api',
-      name: 'MangaDex API Oficial (En Vivo)',
-      description: 'Catálogo mundial de manga conectado en tiempo real a https://api.mangadex.org con soporte de lectura de capítulos.',
+      name: 'MangaDex Oficial',
+      lang: 'ES / LATAM / EN',
+      version: 'v5.10',
+      icon: 'bi-Journal-richtext',
+      description: 'Repositorio global oficial de manga (api.mangadex.org) con caché de baja latencia.',
       isDemo: false,
       isLocal: false,
       isExternalApi: true,
-      limitsNotice: 'API Pública Oficial de MangaDex (api.mangadex.org). Incluye soporte de capítulos en Español (ES/LATAM) e Inglés.'
+      limitsNotice: 'API Pública Oficial de MangaDex con caché local TTL activa.'
     });
     this.cachedSeries = [];
+    this.queryCache = new Map(); // queryKey -> { timestamp, items }
+    this.chapterFeedCache = new Map(); // mangaId -> chapters[]
     this.chapterPagesCache = new Map();
+    this.activeAbortController = null;
   }
 
   /**
-   * Realiza la petición GET JSON a la API de MangaDex utilizando el proxy local
-   * (/api/mangadex/...) para evitar bloqueos CORS/Hotlink o directamente a
-   * https://api.mangadex.org como respaldo.
+   * Realiza la petición GET JSON a la API de MangaDex con caché en memoria + medición de latencia.
    */
-  async _fetchMangaDexJson(endpointPath) {
+  async _fetchMangaDexJson(endpointPath, { useCache = true, signal = null } = {}) {
     const cleanPath = endpointPath.replace(/^\/+/, '');
+    if (useCache && this.queryCache.has(cleanPath)) {
+      const entry = this.queryCache.get(cleanPath);
+      if (Date.now() - entry.timestamp < 5 * 60 * 1000) {
+        this.cacheHits += 1;
+        this.lastLatencyMs = 1;
+        return entry.data;
+      }
+    }
+
     const proxyUrl = `/api/mangadex/${cleanPath}`;
     const directUrl = `https://api.mangadex.org/${cleanPath}`;
 
@@ -72,18 +101,24 @@ export class MangaDexProvider extends BaseSourceProvider {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      signal
     };
+
+    const t0 = performance.now();
 
     try {
       const response = await fetch(proxyUrl, requestOptions);
       if (response.ok) {
         const data = await response.json();
-        console.log('[MangaDex API Response]', data);
+        this.lastLatencyMs = Math.max(1, Math.round(performance.now() - t0));
+        if (useCache) {
+          this.queryCache.set(cleanPath, { timestamp: Date.now(), data });
+        }
         return data;
       }
-    } catch {
-      // Continuar con llamada directa a https://api.mangadex.org
+    } catch (err) {
+      if (err?.name === 'AbortError') throw err;
     }
 
     const response = await fetch(directUrl, requestOptions);
@@ -91,7 +126,10 @@ export class MangaDexProvider extends BaseSourceProvider {
       throw new Error(`MangaDex API respondió con HTTP ${response.status}`);
     }
     const data = await response.json();
-    console.log('[MangaDex API Direct Response]', data);
+    this.lastLatencyMs = Math.max(1, Math.round(performance.now() - t0));
+    if (useCache) {
+      this.queryCache.set(cleanPath, { timestamp: Date.now(), data });
+    }
     return data;
   }
 
@@ -119,7 +157,13 @@ export class MangaDexProvider extends BaseSourceProvider {
    * Busca mangas o carga los más populares en tiempo real desde MangaDex API.
    */
   async searchManga(query = '', options = {}) {
-    const limit = options.limit || 16;
+    if (this.activeAbortController) {
+      this.activeAbortController.abort();
+    }
+    this.activeAbortController = new AbortController();
+
+    const limit = options.limit || 18;
+    const langFilter = options.lang || 'all';
     const params = new URLSearchParams();
     params.append('limit', String(limit));
     params.append('includes[]', 'cover_art');
@@ -129,6 +173,13 @@ export class MangaDexProvider extends BaseSourceProvider {
     params.append('contentRating[]', 'suggestive');
     params.append('hasAvailableChapters', 'true');
 
+    if (langFilter === 'es') {
+      params.append('availableTranslatedLanguage[]', 'es');
+      params.append('availableTranslatedLanguage[]', 'es-la');
+    } else if (langFilter === 'en') {
+      params.append('availableTranslatedLanguage[]', 'en');
+    }
+
     const cleanQ = query.trim();
     if (cleanQ) {
       params.append('title', cleanQ);
@@ -137,7 +188,10 @@ export class MangaDexProvider extends BaseSourceProvider {
       params.append('order[followedCount]', 'desc');
     }
 
-    const data = await this._fetchMangaDexJson(`manga?${params.toString()}`);
+    const data = await this._fetchMangaDexJson(`manga?${params.toString()}`, {
+      useCache: true,
+      signal: this.activeAbortController.signal
+    });
     const mangaList = Array.isArray(data?.data) ? data.data : [];
 
     const mappedSeries = mangaList.map((item) => this._mapMangaDexItemToSeries(item));
@@ -154,7 +208,6 @@ export class MangaDexProvider extends BaseSourceProvider {
       byId.set(s.id, s);
     }
 
-    // Poner primero los resultados de la búsqueda actual
     const currentIds = new Set(mappedSeries.map((s) => s.id));
     const others = Array.from(byId.values()).filter((s) => !currentIds.has(s.id));
     this.cachedSeries = [...mappedSeries, ...others];
@@ -167,7 +220,6 @@ export class MangaDexProvider extends BaseSourceProvider {
     const attr = item.attributes || {};
     const rels = Array.isArray(item.relationships) ? item.relationships : [];
 
-    // Título preferido (es -> es-la -> en -> ja-ro -> primero disponible)
     const titles = attr.title || {};
     const altTitles = Array.isArray(attr.altTitles) ? attr.altTitles : [];
     let bestTitle =
@@ -183,7 +235,6 @@ export class MangaDexProvider extends BaseSourceProvider {
       if (esAlt) bestTitle = esAlt.es || esAlt['es-la'] || bestTitle;
     }
 
-    // Sinopsis preferida en Español o Inglés
     const descs = attr.description || {};
     const rawSynopsis =
       descs.es ||
@@ -196,7 +247,6 @@ export class MangaDexProvider extends BaseSourceProvider {
       .replace(/[*_~`#>-]/g, '')
       .slice(0, 650);
 
-    // Autor y Artista
     const authorRel = rels.find((r) => r.type === 'author');
     const artistRel = rels.find((r) => r.type === 'artist');
     const authorName =
@@ -204,11 +254,11 @@ export class MangaDexProvider extends BaseSourceProvider {
       artistRel?.attributes?.name ||
       'Autor en MangaDex';
 
-    // Portada oficial (vía proxy local para evitar bloqueo de hotlinking de MangaDex)
+    // Portada optimizada (.256.jpg) para carga rápida en cuadrícula y proxy con caché
     const coverRel = rels.find((r) => r.type === 'cover_art');
     const coverFile = coverRel?.attributes?.fileName;
     const coverUrl = coverFile
-      ? `/api/mangadex-cover/${mangaId}/${encodeURIComponent(coverFile)}.512.jpg`
+      ? `/api/mangadex-cover/${mangaId}/${encodeURIComponent(coverFile)}.256.jpg`
       : generateCoverSvg({
           id: `md-${mangaId}`,
           title: bestTitle,

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mangashelf-pwa-v3.0.0';
+const CACHE_NAME = 'mangashelf-pwa-v3.5.0';
 const USER_DOWNLOADS_CACHE = 'mangashelf-user-downloads-v1';
 
 const CORE_ASSETS = [

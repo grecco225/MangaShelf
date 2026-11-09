@@ -1,73 +1,69 @@
 <!DOCTYPE html>
-<html lang="es" data-bs-theme="dark" data-anime-theme="cyber">
+<html lang="es" data-bs-theme="light" data-anime-theme="matcha">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0d101d" />
-  <meta name="description" content="MangaShelf v3 — Plataforma y lector digital PWA conectado a MangaDex API, archivos locales CBZ/EPUB/PDF y Dominio Público." />
+  <meta name="theme-color" content="#F8F7F4" />
+  <meta name="description" content="MangaShelf — Lector y organizador minimalista de manga y cómic con repositorios optimizados (MangaDex API, Internet Archive, Gutenberg y archivos locales CBZ/EPUB/PDF)." />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="MangaShelf" />
 
-  <title>MangaShelf v3 — Anime &amp; Manga Reader PWA (MangaDex API)</title>
+  <title>MangaShelf — Biblioteca &amp; Lector Minimalista</title>
 
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
   <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
   <link rel="apple-touch-icon" href="./icons/icon-192.png" />
 
-  <!-- Google Fonts: Outfit + Plus Jakarta Sans -->
+  <!-- Tipografías limpias y editoriales: Plus Jakarta Sans + Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- Bootstrap 5.3.3 CSS + Bootstrap Icons 1.11.3 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-  <!-- Hoja de estilos personalizada con animaciones y temas Anime -->
+  <!-- Hoja de estilos Minimalista Pastel -->
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <!-- Fondo ambiental animado -->
-  <div class="ambient-glow ambient-glow-1" aria-hidden="true"></div>
-  <div class="ambient-glow ambient-glow-2" aria-hidden="true"></div>
-
   <div class="app-layout">
-    <!-- BARRA LATERAL (ESCRITORIO) -->
+    <!-- BARRA LATERAL MINIMALISTA (ESCRITORIO) -->
     <aside class="desktop-sidebar" aria-label="Navegación principal">
       <div class="brand-box">
         <div class="brand-logo-wrap">
-          <img src="./icons/icon.svg" alt="Icono de MangaShelf" class="brand-logo" width="42" height="42" />
-          <span class="brand-live-dot" title="MangaDex API Conectada"></span>
+          <img src="./icons/icon.svg" alt="Icono de MangaShelf" class="brand-logo" width="38" height="38" />
+          <span class="brand-live-dot" title="Repositorios API Optimizados"></span>
         </div>
         <div>
           <div class="brand-title-row">
             <span class="brand-name">MangaShelf</span>
-            <span class="demo-pill">v3 PRO</span>
+            <span class="demo-pill">Minimal</span>
           </div>
-          <p class="brand-subtitle mb-0">MangaDex API &amp; Lector PWA</p>
+          <p class="brand-subtitle mb-0">Biblioteca &amp; Fuentes API</p>
         </div>
       </div>
 
       <nav class="sidebar-nav">
         <button type="button" class="nav-btn active" data-nav="library">
-          <i class="bi bi-collection-play-fill nav-icon-bi"></i>
-          <span>Mi Biblioteca</span>
+          <i class="bi bi-grid-fill nav-icon-bi"></i>
+          <span>Biblioteca</span>
           <span class="nav-badge" id="sidebar-library-count">0</span>
+        </button>
+
+        <button type="button" class="nav-btn" data-nav="updates">
+          <i class="bi bi-bell-fill nav-icon-bi"></i>
+          <span>Actualizaciones</span>
+          <span class="nav-badge accent" id="sidebar-updates-count">0</span>
         </button>
 
         <button type="button" class="nav-btn" data-nav="explore">
           <i class="bi bi-compass-fill nav-icon-bi"></i>
-          <span>Explorar &amp; MangaDex</span>
+          <span>Fuentes &amp; Explorar</span>
           <span class="nav-badge secondary" id="sidebar-explore-count">0</span>
-        </button>
-
-        <button type="button" class="nav-btn" data-nav="updates">
-          <i class="bi bi-cloud-arrow-down-fill nav-icon-bi"></i>
-          <span>Capítulos &amp; Offline</span>
-          <span class="nav-badge accent" id="sidebar-updates-count">0</span>
         </button>
 
         <button type="button" class="nav-btn" data-nav="history">
@@ -76,23 +72,23 @@
         </button>
       </nav>
 
-      <!-- Selector rápido de tema visual en barra lateral -->
+      <!-- Selector de Paleta Pastel Minimalista -->
       <div class="theme-picker-card mb-3">
         <div class="d-flex align-items-center justify-content-between mb-2">
-          <span class="small fw-bold text-uppercase tracking-wider opacity-75">
-            <i class="bi bi-palette-fill me-1"></i> Tema Visual
+          <span class="small fw-semibold text-uppercase tracking-wider opacity-75">
+            <i class="bi bi-palette me-1"></i> Paleta Pastel
           </span>
-          <span class="badge rounded-pill text-bg-dark border border-secondary border-opacity-25" id="active-theme-label">Cyber</span>
+          <span class="pastel-theme-tag" id="active-theme-label">Matcha</span>
         </div>
         <div class="theme-swatch-row">
-          <button type="button" class="theme-swatch active" data-theme-choice="cyber" title="Cyber Anime (Violeta & Neón Cian)">
-            <span class="swatch-dot swatch-cyber"></span> Cyber
+          <button type="button" class="theme-swatch active" data-theme-choice="matcha" title="Salvia Matcha & Crema (Pastel Claro)">
+            <span class="swatch-dot swatch-matcha"></span> Matcha
           </button>
-          <button type="button" class="theme-swatch" data-theme-choice="sakura" title="Sakura Crimson (Rosa & Carmesí)">
+          <button type="button" class="theme-swatch" data-theme-choice="sakura" title="Lavanda & Sakura (Pastel Suave)">
             <span class="swatch-dot swatch-sakura"></span> Sakura
           </button>
-          <button type="button" class="theme-swatch" data-theme-choice="shonen" title="Shonen Gold (Ámbar & Esmeralda)">
-            <span class="swatch-dot swatch-shonen"></span> Shonen
+          <button type="button" class="theme-swatch" data-theme-choice="nord" title="Pizarra Nórdica (Oscuro Mate sin neón)">
+            <span class="swatch-dot swatch-nord"></span> Noche
           </button>
         </div>
       </div>
@@ -101,17 +97,17 @@
         <div class="source-Notice-card">
           <div class="source-notice-header">
             <span class="status-dot demo"></span>
-            <strong>MangaDex + Local DB</strong>
+            <strong>Almacenamiento &amp; Caché</strong>
           </div>
           <p id="storage-usage-text" class="mb-2">
-            Almacenamiento local IndexedDB + API en vivo de MangaDex.
+            Datos locales IndexedDB + Caché de repositorios activa.
           </p>
           <div class="d-grid gap-2">
             <button type="button" class="btn-subtle btn-full" id="open-local-modal-btn">
-              <i class="bi bi-file-earmark-arrow-up me-1"></i> Importar CBZ / EPUB / PDF
+              <i class="bi bi-plus-circle me-1"></i> Importar CBZ / EPUB / PDF
             </button>
             <button type="button" class="btn-subtle btn-full" id="open-backup-modal-btn">
-              <i class="bi bi-shield-check me-1"></i> Copia de Seguridad JSON
+              <i class="bi bi-archive me-1"></i> Respaldo JSON
             </button>
           </div>
         </div>
@@ -120,53 +116,48 @@
 
     <!-- CONTENEDOR PRINCIPAL -->
     <div class="main-wrapper">
-      <!-- CABECERA SUPERIOR CON RETROCESO INTELIGENTE Y BREADCRUMBS -->
+      <!-- CABECERA MINIMALISTA CON RETROCESO Y BREADCRUMBS -->
       <header class="app-header">
         <div class="header-left">
-          <!-- Botón global de Retroceso siempre accesible -->
           <button
             type="button"
             id="global-back-btn"
             class="btn-global-back hidden"
-            title="Volver a la pantalla anterior (Esc / Alt+Izquierda)"
+            title="Volver a la vista anterior (Esc / Alt+Izquierda)"
             aria-label="Volver atrás"
           >
-            <i class="bi bi-arrow-left"></i>
+            <i class="bi bi-chevron-left"></i>
             <span class="back-btn-text">Atrás</span>
           </button>
 
-          <img src="./icons/icon.svg" alt="MangaShelf" class="mobile-logo" width="36" height="36" />
+          <img src="./icons/icon.svg" alt="MangaShelf" class="mobile-logo" width="34" height="34" />
 
           <div>
-            <!-- Rastro de navegación interactivo (Breadcrumbs) -->
             <nav aria-label="Ruta de navegación" class="breadcrumb-nav">
               <ol class="breadcrumb-list" id="header-breadcrumbs">
-                <li class="breadcrumb-item-custom"><i class="bi bi-house-door-fill"></i> Inicio</li>
-                <li class="breadcrumb-item-custom active">Mi Biblioteca</li>
+                <li class="breadcrumb-item-custom"><i class="bi bi-book-half"></i> MangaShelf</li>
+                <li class="breadcrumb-item-custom active">Biblioteca</li>
               </ol>
             </nav>
 
             <div class="header-title-group">
-              <h1 id="screen-title">Mi Biblioteca</h1>
-              <span class="demo-pill"><i class="bi bi-lightning-charge-fill me-1"></i>MANGADEX API</span>
+              <h1 id="screen-title">Biblioteca</h1>
             </div>
             <p class="header-subtitle mb-0" id="screen-subtitle">
-              Tus series, mangas de MangaDex, archivos importados y progreso sincronizado
+              Tu estantería limpia y organizada
             </p>
           </div>
         </div>
 
         <div class="header-actions">
-          <!-- Botón rápido para ir a MangaDex en vivo -->
-          <button type="button" id="header-mangadex-btn" class="btn-mangadex-pulse" title="Explorar catálogo en vivo de MangaDex API">
-            <i class="bi bi-fire"></i>
-            <span class="hide-xs">MangaDex Live</span>
+          <button type="button" id="header-mangadex-btn" class="btn-pastel-accent" title="Ver repositorios y catálogo de MangaDex">
+            <i class="bi bi-compass"></i>
+            <span class="hide-xs">Fuentes API</span>
           </button>
 
-          <!-- Botón cambiar tema en móvil/header -->
-          <button type="button" id="header-theme-cycle-btn" class="btn-subtle" title="Cambiar paleta de colores Anime">
-            <i class="bi bi-palette2"></i>
-            <span class="hide-xs">Tema</span>
+          <button type="button" id="header-theme-cycle-btn" class="btn-subtle" title="Cambiar tono pastel (Matcha / Sakura / Noche)">
+            <i class="bi bi-sliders2"></i>
+            <span class="hide-xs">Tono</span>
           </button>
 
           <button type="button" id="header-import-btn" class="btn-subtle" title="Importar archivo CBZ, EPUB, PDF o imágenes">
@@ -175,19 +166,17 @@
           </button>
 
           <button type="button" id="header-backup-btn" class="btn-subtle" title="Exportar o restaurar copia de seguridad JSON">
-            <i class="bi bi-cloud-download"></i>
+            <i class="bi bi-cloud-check"></i>
             <span class="hide-xs">Copia</span>
           </button>
 
-          <!-- Indicador En línea / Sin conexión -->
           <div id="network-status" class="network-badge online" role="status" aria-live="polite">
             <span class="network-dot"></span>
             <span id="network-status-text">En línea</span>
           </div>
 
-          <!-- Botón Instalar PWA -->
           <button type="button" id="install-pwa-btn" class="btn-install" aria-label="Instalar aplicación MangaShelf">
-            <i class="bi bi-phone-fill"></i>
+            <i class="bi bi-download"></i>
             <span>Instalar</span>
           </button>
         </div>
@@ -195,13 +184,13 @@
 
       <!-- BANNER AVISO OFFLINE -->
       <div id="offline-banner" class="offline-banner hidden" role="alert">
-        <i class="bi bi-wifi-off fs-5"></i>
+        <i class="bi bi-wifi-off"></i>
         <span>
-          <strong>Modo sin conexión activo:</strong> Tu biblioteca, archivos importados (CBZ/EPUB/PDF) y capítulos descargados funcionan 100% offline.
+          <strong>Modo sin conexión:</strong> Tu estantería, archivos importados y capítulos guardados siguen disponibles.
         </span>
       </div>
 
-      <!-- BARRA DE BÚSQUEDA Y FILTROS (Visible en Biblioteca y Explorar) -->
+      <!-- BARRA DE BÚSQUEDA Y FILTROS MINIMALISTA -->
       <section id="filters-section" class="controls-bar" aria-label="Búsqueda y filtros">
         <div class="search-row">
           <div class="search-input-wrapper">
@@ -209,7 +198,7 @@
             <input
               type="search"
               id="search-input"
-              placeholder="Filtrar por título, autor, género o etiqueta (o presiona Enter para buscar en MangaDex)..."
+              placeholder="Buscar en tu colección o presiona Enter para consultar MangaDex..."
               autocomplete="off"
               aria-label="Buscar por título, autor, género o etiqueta"
             />
@@ -220,26 +209,29 @@
 
           <div class="secondary-filters">
             <select id="genre-select" class="genre-select" aria-label="Filtrar por género">
-              <option value="all">Todos los géneros</option>
+              <option value="all">Géneros</option>
             </select>
 
-            <select id="tag-select" class="genre-select" aria-label="Filtrar por etiqueta personal">
-              <option value="all">Todas las etiquetas</option>
+            <select id="tag-select" class="genre-select" aria-label="Filtrar por categoría">
+              <option value="all">Categorías</option>
             </select>
 
             <button type="button" id="favorites-filter-btn" class="chip-toggle" aria-pressed="false">
               <i class="bi bi-heart-fill heart-icon"></i> Favoritos
             </button>
+
+            <button type="button" id="grid-density-btn" class="chip-toggle" title="Alternar entre vista de póster compacta y vista con detalles">
+              <i class="bi bi-grid-3x3-gap-fill"></i> <span id="grid-density-label" class="hide-xs">Compacta</span>
+            </button>
           </div>
         </div>
 
         <div class="status-filter-row" role="group" aria-label="Filtrar por estado de la serie">
-          <span class="filter-label"><i class="bi bi-funnel-fill me-1"></i>Estado:</span>
           <div class="status-pills" id="status-pills">
             <button type="button" class="status-pill active" data-status="all">Todos</button>
-            <button type="button" class="status-pill" data-status="En curso">En curso</button>
-            <button type="button" class="status-pill" data-status="Completado">Completado</button>
-            <button type="button" class="status-pill" data-status="Pendiente">Pendiente</button>
+            <button type="button" class="status-pill" data-status="En curso">En publicación</button>
+            <button type="button" class="status-pill" data-status="Completado">Completados</button>
+            <button type="button" class="status-pill" data-status="Pendiente">En pausa</button>
           </div>
         </div>
       </section>
@@ -250,7 +242,7 @@
       </main>
     </div>
 
-    <!-- BOTÓN FLOTANTE DE RETROCESO RÁPIDO (MÓVIL / SUBVISTAS) -->
+    <!-- BOTÓN FLOTANTE DE RETROCESO SUAVE -->
     <button
       type="button"
       id="floating-back-fab"
@@ -258,32 +250,32 @@
       aria-label="Volver a la vista anterior"
       title="Volver atrás"
     >
-      <i class="bi bi-arrow-left-circle-fill"></i>
+      <i class="bi bi-arrow-left"></i>
       <span>Volver</span>
     </button>
 
-    <!-- NAVEGACIÓN INFERIOR (MÓVIL / ANDROID) -->
+    <!-- NAVEGACIÓN INFERIOR (MÓVIL / ESTILO TACHIMANGA) -->
     <nav class="mobile-bottom-nav" aria-label="Navegación inferior móvil">
       <button type="button" class="mobile-nav-item active" data-nav="library">
         <div class="mobile-icon-wrap">
-          <i class="bi bi-collection-play-fill fs-5"></i>
+          <i class="bi bi-grid-fill fs-5"></i>
           <span class="mobile-badge" id="mobile-library-count">0</span>
         </div>
         <span>Biblioteca</span>
+      </button>
+
+      <button type="button" class="mobile-nav-item" data-nav="updates">
+        <div class="mobile-icon-wrap">
+          <i class="bi bi-bell-fill fs-5"></i>
+        </div>
+        <span>Capítulos</span>
       </button>
 
       <button type="button" class="mobile-nav-item" data-nav="explore">
         <div class="mobile-icon-wrap">
           <i class="bi bi-compass-fill fs-5"></i>
         </div>
-        <span>MangaDex</span>
-      </button>
-
-      <button type="button" class="mobile-nav-item" data-nav="updates">
-        <div class="mobile-icon-wrap">
-          <i class="bi bi-cloud-arrow-down-fill fs-5"></i>
-        </div>
-        <span>Capítulos</span>
+        <span>Fuentes</span>
       </button>
 
       <button type="button" class="mobile-nav-item" data-nav="history">
@@ -297,11 +289,10 @@
 
   <!-- LECTOR DIGITAL DE CAPÍTULOS (MODAL PANTALLA COMPLETA) -->
   <div id="reader-overlay" class="reader-overlay hidden" role="dialog" aria-modal="true" aria-label="Lector de capítulos">
-    <!-- Barra superior del lector -->
     <header id="reader-top-bar" class="reader-top-bar">
       <button type="button" id="reader-close-btn" class="reader-icon-btn" aria-label="Volver a la ficha de la serie">
-        <i class="bi bi-arrow-left fs-5"></i>
-        <span>Volver a la Serie</span>
+        <i class="bi bi-chevron-left"></i>
+        <span>Volver</span>
       </button>
 
       <div class="reader-title-info">
@@ -311,10 +302,10 @@
 
       <div class="reader-top-controls">
         <button type="button" id="reader-dir-btn" class="reader-chip-btn" title="Cambiar dirección de lectura (Occidental LTR o Manga RTL)">
-          Dir: Izq → Der
+          LTR
         </button>
         <button type="button" id="reader-mode-btn" class="reader-chip-btn" title="Alternar entre páginas individuales y desplazamiento vertical Webtoon">
-          Vista: Páginas
+          Paginado
         </button>
         <button type="button" id="reader-fit-btn" class="reader-chip-btn hide-xs" title="Cambiar ajuste de página">
           Ajuste: Alto
@@ -327,21 +318,17 @@
       </div>
     </header>
 
-    <!-- Lienzo principal de lectura -->
     <div id="reader-viewport" class="reader-viewport">
-      <!-- Visor opcional cuando se abre un archivo PDF local -->
       <div id="reader-pdf-bar" class="reader-pdf-bar hidden">
-        <span><i class="bi bi-file-earmark-pdf-fill me-1"></i> Documento PDF local cargado desde IndexedDB.</span>
-        <a id="reader-open-pdf-link" href="#" target="_blank" rel="noopener" class="btn-primary">Abrir PDF completo</a>
+        <span><i class="bi bi-file-earmark-pdf me-1"></i> Documento PDF local.</span>
+        <a id="reader-open-pdf-link" href="#" target="_blank" rel="noopener" class="btn-primary">Abrir PDF</a>
       </div>
 
-      <!-- Indicador de carga de página -->
       <div id="reader-loading-spinner" class="reader-loading-spinner hidden">
-        <div class="spinner-border text-info" role="status"></div>
-        <span>Cargando páginas desde el servidor...</span>
+        <div class="spinner-border spinner-pastel" role="status"></div>
+        <span>Sincronizando páginas del repositorio...</span>
       </div>
 
-      <!-- Zonas táctiles para modo paginado -->
       <div id="reader-paged-container" class="reader-paged-container">
         <div class="tap-zone tap-left" id="tap-left-zone" title="Toca para cambiar de página"></div>
         <div class="tap-zone tap-center" id="tap-hud-zone" title="Toca para mostrar u ocultar controles"></div>
@@ -349,21 +336,19 @@
         <img id="reader-page-img" class="reader-page-img" src="" alt="Página del capítulo" />
       </div>
 
-      <!-- Contenedor para modo Desplazamiento Vertical / Webtoon -->
       <div id="reader-webtoon-container" class="reader-webtoon-container hidden"></div>
     </div>
 
-    <!-- Barra inferior del lector -->
     <footer id="reader-bottom-bar" class="reader-bottom-bar">
       <div class="reader-progress-row">
         <button type="button" id="reader-prev-btn" class="reader-nav-btn" aria-label="Página anterior">
-          <i class="bi bi-chevron-left"></i> Anterior
+          <i class="bi bi-chevron-left"></i> Ant.
         </button>
 
         <div class="reader-slider-wrap">
           <div class="reader-page-counter">
             <span id="reader-page-indicator">Página 1 de 5</span>
-            <span class="reader-saved-badge" id="reader-saved-indicator"><i class="bi bi-check2-circle"></i> Guardado</span>
+            <span class="reader-saved-badge" id="reader-saved-indicator">Guardado</span>
           </div>
           <input
             type="range"
@@ -377,58 +362,57 @@
         </div>
 
         <button type="button" id="reader-next-btn" class="reader-nav-btn primary" aria-label="Página siguiente">
-          Siguiente <i class="bi bi-chevron-right"></i>
+          Sig. <i class="bi bi-chevron-right"></i>
         </button>
       </div>
 
       <div class="reader-chapter-switch-row">
         <button type="button" id="reader-prev-chapter-btn" class="reader-chapter-btn">
-          <i class="bi bi-skip-backward-fill me-1"></i>Cap. Anterior
+          <i class="bi bi-skip-start-fill me-1"></i>Cap. Anterior
         </button>
-        <span class="reader-demo-watermark" id="reader-footer-status">Modo LTR • Guardado automático</span>
+        <span class="reader-demo-watermark" id="reader-footer-status">Lectura fluida • Precarga activa</span>
         <button type="button" id="reader-next-chapter-btn" class="reader-chapter-btn">
-          Siguiente Cap.<i class="bi bi-skip-forward-fill ms-1"></i>
+          Siguiente Cap.<i class="bi bi-skip-end-fill ms-1"></i>
         </button>
       </div>
     </footer>
   </div>
 
-  <!-- MODAL PARA IMPORTAR ARCHIVOS LOCALES (CBZ, ZIP, EPUB, PDF, IMÁGENES) -->
+  <!-- MODAL PARA IMPORTAR ARCHIVOS LOCALES -->
   <div id="local-import-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="local-modal-title">
     <div class="modal-card">
       <div class="modal-header">
-        <h2 id="local-modal-title"><i class="bi bi-box-arrow-in-down me-2 text-info"></i>Importar Archivo Local</h2>
+        <h2 id="local-modal-title">Importar Archivo Local</h2>
         <button type="button" id="close-local-modal-btn" class="modal-close-btn" aria-label="Cerrar">✕</button>
       </div>
       <div class="modal-body">
         <p class="modal-desc">
-          Tus archivos se procesan <strong>100% en tu dispositivo</strong> sin enviarse a ningún servidor externo, y se guardan en <code>IndexedDB</code> para mantenerse aunque cierres o recargues la app.
+          Procesamiento local en tu navegador mediante <code>IndexedDB</code> sin subir archivos a servidores externos.
         </p>
 
         <div class="sample-files-box">
-          <strong><i class="bi bi-stars me-1 text-warning"></i>¿Quieres probar el extractor binario ahora mismo?</strong>
-          <p>Carga con un toque uno de los archivos reales incluidos en el proyecto:</p>
-          <div class="sample-buttons-row">
+          <strong>Archivos de prueba incluidos:</strong>
+          <div class="sample-buttons-row mt-1">
             <button type="button" id="load-sample-cbz-btn" class="btn-subtle">
-              📦 Probar archivo .CBZ real
+              📦 Cargar .CBZ de ejemplo
             </button>
             <button type="button" id="load-sample-epub-btn" class="btn-subtle">
-              📖 Probar archivo .EPUB real
+              📖 Cargar .EPUB de ejemplo
             </button>
           </div>
         </div>
 
         <form id="local-import-form">
           <label class="form-field">
-            <span>Título (opcional, se autodetecta en CBZ/EPUB)</span>
+            <span>Título (opcional)</span>
             <input type="text" id="local-series-title" placeholder="Ej. Mi Tomo Personal" />
           </label>
           <label class="form-field">
-            <span>Autor / Colección (opcional)</span>
-            <input type="text" id="local-series-author" placeholder="Ej. Dominio Público / Personal" />
+            <span>Autor (opcional)</span>
+            <input type="text" id="local-series-author" placeholder="Ej. Colección Personal" />
           </label>
           <label class="form-field">
-            <span>Archivo (.CBZ, .ZIP, .EPUB, .PDF) o múltiples imágenes (.JPG, .PNG, .WEBP, .SVG)</span>
+            <span>Archivo (.CBZ, .ZIP, .EPUB, .PDF) o imágenes</span>
             <input
               type="file"
               id="local-series-files"
@@ -437,65 +421,49 @@
               required
             />
           </label>
-          <div class="format-limits-note">
-            <strong>Formatos soportados:</strong>
-            <ul>
-              <li><strong>.CBZ / .ZIP y .EPUB:</strong> Descompresión nativa en el navegador y lectura página a página offline.</li>
-              <li><strong>.PDF e Imágenes:</strong> Almacenados en IndexedDB para lectura offline.</li>
-            </ul>
-          </div>
-          <div id="import-loading-status" class="import-status hidden">Procesando y validando archivo...</div>
+          <div id="import-loading-status" class="import-status hidden">Procesando archivo...</div>
           <div class="modal-actions">
-            <button type="button" id="cancel-local-modal-btn" class="btn-secondary">
-              <i class="bi bi-arrow-left me-1"></i>Volver
-            </button>
-            <button type="submit" id="submit-local-import-btn" class="btn-primary">
-              <i class="bi bi-check2-circle me-1"></i>Validar e Importar
-            </button>
+            <button type="button" id="cancel-local-modal-btn" class="btn-secondary">Volver</button>
+            <button type="submit" id="submit-local-import-btn" class="btn-primary">Importar a Biblioteca</button>
           </div>
         </form>
       </div>
     </div>
   </div>
 
-  <!-- MODAL DE COPIA DE SEGURIDAD (EXPORTAR / RESTAURAR JSON) -->
+  <!-- MODAL DE COPIA DE SEGURIDAD -->
   <div id="backup-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="backup-modal-title">
     <div class="modal-card">
       <div class="modal-header">
-        <h2 id="backup-modal-title"><i class="bi bi-database-fill-lock me-2 text-info"></i>Copia de Seguridad y Datos</h2>
+        <h2 id="backup-modal-title">Respaldo y Datos Locales</h2>
         <button type="button" id="close-backup-modal-btn" class="modal-close-btn" aria-label="Cerrar">✕</button>
       </div>
       <div class="modal-body">
         <p class="modal-desc">
-          Exporta tu biblioteca, series de MangaDex guardadas, etiquetas, favoritos, historial y progreso en un archivo <code>.json</code> y restáuralo en cualquier dispositivo.
+          Exporta tu biblioteca, categorías, historial y progreso de lectura en un archivo <code>.json</code> ligero.
         </p>
 
         <div class="backup-section-box">
-          <h3>1. Exportar mis datos</h3>
-          <p>Descarga un archivo JSON con toda tu biblioteca, etiquetas y progreso actual.</p>
+          <h3>Exportar copia de seguridad</h3>
           <button type="button" id="export-json-btn" class="btn-primary btn-full">
-            <i class="bi bi-download me-1"></i> Descargar Copia de Seguridad (.JSON)
+            <i class="bi bi-download me-1"></i> Descargar Respaldo (.JSON)
           </button>
         </div>
 
         <div class="backup-section-box">
-          <h3>2. Restaurar desde copia de seguridad</h3>
-          <p>Selecciona un archivo <code>.json</code> exportado previamente desde MangaShelf:</p>
+          <h3>Restaurar copia de seguridad</h3>
           <input type="file" id="import-backup-file" accept=".json,application/json" class="backup-file-input" />
         </div>
 
-        <div class="backup-section-box danger-zone">
-          <h3>3. Restablecer datos iniciales de demostración</h3>
-          <p>Restaura las series y el progreso de ejemplo por defecto.</p>
+        <div class="backup-section-box">
+          <h3>Restablecer colección de muestra</h3>
           <button type="button" id="reset-demo-data-btn" class="btn-subtle btn-full">
-            <i class="bi bi-arrow-counterclockwise me-1"></i> Restaurar estado inicial
+            Restaurar estado inicial
           </button>
         </div>
 
         <div class="modal-actions">
-          <button type="button" id="ok-backup-modal-btn" class="btn-secondary">
-            <i class="bi bi-arrow-left me-1"></i>Volver
-          </button>
+          <button type="button" id="ok-backup-modal-btn" class="btn-secondary">Volver</button>
         </div>
       </div>
     </div>
@@ -505,27 +473,23 @@
   <div id="install-help-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="install-modal-title">
     <div class="modal-card">
       <div class="modal-header">
-        <h2 id="install-modal-title"><i class="bi bi-phone-vibrate me-2 text-info"></i>Instalar MangaShelf en Android o PC</h2>
+        <h2 id="install-modal-title">Instalar MangaShelf</h2>
         <button type="button" id="close-install-modal-btn" class="modal-close-btn" aria-label="Cerrar">✕</button>
       </div>
       <div class="modal-body">
-        <p class="modal-desc">
-          MangaShelf incluye <code>manifest.webmanifest</code>, iconos adaptables y <code>Service Worker</code> con caché offline para abrirse como aplicación nativa.
-        </p>
         <div class="install-steps-box">
-          <h3>En Chrome para Android:</h3>
+          <h3>En Android (Chrome):</h3>
           <ol>
-            <li>Toca el menú de tres puntos <strong>⋮</strong> en la esquina superior derecha de Chrome.</li>
-            <li>Elige <strong>«Instalar aplicación»</strong> o <strong>«Añadir a pantalla de inicio»</strong>.</li>
-            <li>Confirma tocando <strong>Instalar</strong>. Se abrirá en pantalla completa sin barra de navegador.</li>
+            <li>Toca el menú <strong>⋮</strong> en la esquina superior derecha.</li>
+            <li>Selecciona <strong>«Instalar aplicación»</strong>.</li>
           </ol>
-          <h3>En Escritorio (Chrome / Edge / Brave):</h3>
+          <h3>En Escritorio:</h3>
           <ol>
-            <li>Haz clic en el icono de instalación situado en el lado derecho de la barra de direcciones URL.</li>
+            <li>Haz clic en el icono de instalación de la barra de direcciones.</li>
           </ol>
         </div>
         <div class="modal-actions">
-          <button type="button" id="ok-install-modal-btn" class="btn-primary">Entendido</button>
+          <button type="button" id="ok-install-modal-btn" class="btn-primary">Cerrar</button>
         </div>
       </div>
     </div>

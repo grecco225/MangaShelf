@@ -1925,100 +1925,127 @@ button {
 
 
 /* ==========================================================================
-   MangaShelf v3 PRO — Bootstrap 5 UX, Temas de Color, Animaciones & Retroceso
+   MangaShelf v3.5 — Edición Minimalista Pastel (Inspiración Estantería Limpia)
+   Cero neón • Colores Pastel • Bootstrap 5 Personalizado • Fuentes Optimizadas
    ========================================================================== */
 
-/* 1. Temas Dinámicos de Color Anime */
-html[data-anime-theme="cyber"] {
-  --bg-base: #090b12;
-  --bg-surface: #0f1422;
-  --bg-card: #151c2f;
-  --bg-card-hover: #1d2742;
-  --bg-elevated: #232f4f;
-  --accent-primary: #8b5cf6;
-  --accent-primary-hover: #7c3aed;
-  --accent-teal: #00f0c8;
-  --accent-pink: #ff477e;
-  --accent-amber: #fbbf24;
-  --glow-primary: rgba(139, 92, 246, 0.35);
-  --glow-secondary: rgba(0, 240, 200, 0.22);
+/* 1. Paleta 1: Matcha & Crema Pastel (Claro Minimalista por Defecto) */
+html[data-anime-theme="matcha"],
+:root {
+  --bg-base: #F6F5F0;
+  --bg-surface: #FDFCF9;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F2F0E8;
+  --bg-elevated: #EAE7DC;
+  --border-subtle: #E4E0D5;
+  --border-focus: #6B9080;
+
+  --text-main: #2A2E33;
+  --text-secondary: #555E68;
+  --text-muted: #7F8892;
+
+  --accent-primary: #6B9080;
+  --accent-primary-hover: #567768;
+  --accent-soft-bg: #E6EFEA;
+  --accent-teal: #588157;
+  --accent-pink: #E07A5F;
+  --accent-amber: #D4A373;
+  --accent-blue: #7EA8BE;
+
+  --shadow-card: 0 2px 10px rgba(42, 46, 51, 0.05);
+  --shadow-elevated: 0 8px 24px rgba(42, 46, 51, 0.08);
+
+  /* Personalización de variables Bootstrap 5 en tonos pastel */
+  --bs-body-bg: #F6F5F0;
+  --bs-body-color: #2A2E33;
+  --bs-primary: #6B9080;
+  --bs-primary-rgb: 107, 144, 128;
+  --bs-secondary: #8A95A5;
+  --bs-border-color: #E4E0D5;
 }
 
+/* 2. Paleta 2: Lavanda & Sakura Pastel (Claro Editorial Suave) */
 html[data-anime-theme="sakura"] {
-  --bg-base: #120910;
-  --bg-surface: #1b0e18;
-  --bg-card: #261422;
-  --bg-card-hover: #331b2e;
-  --bg-elevated: #402239;
-  --accent-primary: #ff477e;
-  --accent-primary-hover: #e11d48;
-  --accent-teal: #ffb3c6;
-  --accent-pink: #fb7185;
-  --accent-amber: #fde047;
-  --glow-primary: rgba(255, 71, 126, 0.38);
-  --glow-secondary: rgba(255, 179, 198, 0.22);
+  --bg-base: #FAF6F8;
+  --bg-surface: #FFFDFEF;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F5EDF1;
+  --bg-elevated: #EFE3EA;
+  --border-subtle: #E8D9E2;
+  --border-focus: #9D8189;
+
+  --text-main: #32292F;
+  --text-secondary: #62545D;
+  --text-muted: #8E7E88;
+
+  --accent-primary: #9D8189;
+  --accent-primary-hover: #846971;
+  --accent-soft-bg: #F4E8EC;
+  --accent-teal: #7E998A;
+  --accent-pink: #E5989B;
+  --accent-amber: #E8A598;
+  --accent-blue: #9A8C98;
+
+  --shadow-card: 0 2px 10px rgba(50, 41, 47, 0.05);
+  --shadow-elevated: 0 8px 24px rgba(50, 41, 47, 0.08);
+
+  --bs-body-bg: #FAF6F8;
+  --bs-body-color: #32292F;
+  --bs-primary: #9D8189;
+  --bs-primary-rgb: 157, 129, 137;
+  --bs-border-color: #E8D9E2;
 }
 
-html[data-anime-theme="shonen"] {
-  --bg-base: #0b0f0d;
-  --bg-surface: #111916;
-  --bg-card: #17231e;
-  --bg-card-hover: #1f3029;
-  --bg-elevated: #283e35;
-  --accent-primary: #f59e0b;
-  --accent-primary-hover: #d97706;
-  --accent-teal: #10b981;
-  --accent-pink: #ef4444;
-  --accent-amber: #fbbf24;
-  --glow-primary: rgba(245, 158, 11, 0.35);
-  --glow-secondary: rgba(16, 185, 129, 0.25);
+/* 3. Paleta 3: Noche Nórdica Pastel (Oscuro Mate Suave, Sin Neón) */
+html[data-anime-theme="nord"] {
+  --bg-base: #191C21;
+  --bg-surface: #21252B;
+  --bg-card: #282C34;
+  --bg-card-hover: #30353E;
+  --bg-elevated: #373D48;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-focus: #88C0D0;
+
+  --text-main: #ECEFF4;
+  --text-secondary: #D8DEE9;
+  --text-muted: #9AA5B4;
+
+  --accent-primary: #81A1C1;
+  --accent-primary-hover: #5E81AC;
+  --accent-soft-bg: rgba(129, 161, 193, 0.16);
+  --accent-teal: #A3BE8C;
+  --accent-pink: #D08770;
+  --accent-amber: #EBCB8B;
+  --accent-blue: #88C0D0;
+
+  --shadow-card: 0 4px 14px rgba(0, 0, 0, 0.22);
+  --shadow-elevated: 0 10px 28px rgba(0, 0, 0, 0.32);
+
+  --bs-body-bg: #191C21;
+  --bs-body-color: #ECEFF4;
+  --bs-primary: #81A1C1;
+  --bs-primary-rgb: 129, 161, 193;
+  --bs-border-color: rgba(255, 255, 255, 0.08);
 }
 
 body {
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   background-color: var(--bg-base);
   color: var(--text-main);
-  transition: background-color 0.35s ease, color 0.25s ease;
+  transition: background-color 0.25s ease, color 0.2s ease;
+  letter-spacing: -0.01em;
 }
 
 h1, h2, h3, .brand-name, .stat-value {
   font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  color: var(--text-main);
 }
 
-/* Luces ambientales de fondo */
-.ambient-glow {
-  position: fixed;
-  width: 480px;
-  height: 480px;
-  border-radius: 50%;
-  filter: blur(130px);
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.45;
-  transition: background 0.5s ease;
-}
-
-.ambient-glow-1 {
-  top: -160px;
-  right: 8%;
-  background: radial-gradient(circle, var(--glow-primary, rgba(139, 92, 246, 0.35)), transparent 70%);
-}
-
-.ambient-glow-2 {
-  bottom: -180px;
-  left: 15%;
-  background: radial-gradient(circle, var(--glow-secondary, rgba(0, 240, 200, 0.22)), transparent 70%);
-}
-
-.app-layout {
-  position: relative;
-  z-index: 1;
-}
-
-/* Barra lateral con glassmorphism */
+/* Barra lateral minimalista estilo app nativa */
 .desktop-sidebar {
-  background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-base) 100%);
-  box-shadow: 6px 0 32px rgba(0, 0, 0, 0.45);
+  background-color: var(--bg-surface);
+  border-right: 1px solid var(--border-subtle);
+  box-shadow: none;
 }
 
 .brand-logo-wrap {
@@ -2028,41 +2055,101 @@ h1, h2, h3, .brand-name, .stat-value {
 
 .brand-live-dot {
   position: absolute;
-  bottom: -2px;
-  right: -2px;
-  width: 12px;
-  height: 12px;
+  bottom: -1px;
+  right: -1px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background-color: var(--accent-teal);
   border: 2px solid var(--bg-surface);
-  box-shadow: 0 0 10px var(--accent-teal);
+}
+
+.demo-pill {
+  background-color: var(--accent-soft-bg);
+  color: var(--accent-primary);
+  border: 1px solid var(--border-subtle);
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .nav-icon-bi {
-  font-size: 1.15rem;
+  font-size: 1.08rem;
   line-height: 1;
 }
 
 .nav-btn {
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 10px;
+  padding: 10px 13px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+  transition: background-color 0.16s ease, color 0.16s ease;
 }
 
 .nav-btn:hover {
-  transform: translateX(4px);
+  background-color: var(--bg-card-hover);
+  color: var(--text-main);
 }
 
 .nav-btn.active {
-  background: linear-gradient(135deg, var(--glow-primary, rgba(139, 92, 246, 0.3)), rgba(0, 212, 170, 0.12));
-  border-color: var(--accent-primary);
-  box-shadow: 0 6px 20px -4px var(--glow-primary, rgba(139, 92, 246, 0.35));
+  background-color: var(--accent-soft-bg);
+  color: var(--accent-primary);
+  border-color: transparent;
+  box-shadow: none;
 }
 
-/* Selector de tema en el sidebar */
+.nav-badge,
+.nav-badge.accent {
+  background-color: var(--bg-elevated);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* Cabecera superior minimalista */
+.app-header {
+  background-color: var(--bg-surface);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.controls-bar {
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.search-input-wrapper input,
+.genre-select,
+.chip-toggle,
+.status-pill {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  box-shadow: none;
+}
+
+.status-pill.active,
+.chip-toggle.active {
+  background-color: var(--accent-primary);
+  color: #ffffff;
+  border-color: var(--accent-primary);
+}
+
+/* Selector de paleta pastel */
 .theme-picker-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
+  border-radius: 12px;
   padding: 10px 12px;
+}
+
+.pastel-theme-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background-color: var(--accent-soft-bg);
+  color: var(--accent-primary);
 }
 
 .theme-swatch-row {
@@ -2077,13 +2164,13 @@ h1, h2, h3, .brand-name, .stat-value {
   justify-content: center;
   gap: 5px;
   font-size: 0.74rem;
-  font-weight: 700;
+  font-weight: 600;
   padding: 6px 4px;
-  border-radius: var(--radius-sm);
+  border-radius: 8px;
   background-color: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
-  transition: all 0.2s ease;
+  transition: all 0.16s ease;
 }
 
 .theme-swatch:hover {
@@ -2092,10 +2179,9 @@ h1, h2, h3, .brand-name, .stat-value {
 }
 
 .theme-swatch.active {
-  background-color: var(--bg-elevated);
-  color: #fff;
+  background-color: var(--accent-soft-bg);
+  color: var(--accent-primary);
   border-color: var(--accent-primary);
-  box-shadow: 0 0 12px var(--glow-primary);
 }
 
 .swatch-dot {
@@ -2104,41 +2190,85 @@ h1, h2, h3, .brand-name, .stat-value {
   border-radius: 50%;
 }
 
-.swatch-cyber {
-  background: linear-gradient(135deg, #8b5cf6, #00f0c8);
+.swatch-matcha {
+  background-color: #6B9080;
 }
 
 .swatch-sakura {
-  background: linear-gradient(135deg, #ff477e, #ffb3c6);
+  background-color: #E5989B;
 }
 
-.swatch-shonen {
-  background: linear-gradient(135deg, #f59e0b, #10b981);
+.swatch-nord {
+  background-color: #81A1C1;
 }
 
-/* Botón Global de Retroceso (Header) y Breadcrumbs */
+/* Botones Pastel Minimalistas */
+.btn-primary {
+  background-color: var(--accent-primary);
+  color: #ffffff;
+  border-radius: 10px;
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-primary-hover);
+}
+
+.btn-secondary,
+.btn-subtle {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.btn-secondary:hover,
+.btn-subtle:hover {
+  background-color: var(--bg-card-hover);
+  border-color: var(--accent-primary);
+}
+
+.btn-pastel-accent {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  background-color: var(--accent-soft-bg);
+  color: var(--accent-primary);
+  border: 1px solid var(--border-subtle);
+  transition: background-color 0.16s ease;
+}
+
+.btn-pastel-accent:hover {
+  background-color: var(--accent-primary);
+  color: #ffffff;
+}
+
+/* Botón Global de Retroceso y Breadcrumbs */
 .btn-global-back {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 9px 15px;
+  gap: 5px;
+  padding: 7px 13px;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover));
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 0.86rem;
-  box-shadow: 0 4px 16px var(--glow-primary, rgba(139, 92, 246, 0.4));
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+  background-color: var(--accent-soft-bg);
+  color: var(--accent-primary);
+  border: 1px solid var(--border-subtle);
+  font-weight: 600;
+  font-size: 0.84rem;
+  transition: background-color 0.16s ease, transform 0.16s ease;
   flex-shrink: 0;
 }
 
 .btn-global-back:hover {
-  transform: translateX(-3px) scale(1.03);
-  box-shadow: 0 6px 22px var(--glow-primary, rgba(139, 92, 246, 0.55));
-}
-
-.btn-global-back:active {
-  transform: scale(0.97);
+  background-color: var(--accent-primary);
+  color: #ffffff;
+  transform: translateX(-2px);
 }
 
 .breadcrumb-nav {
@@ -2153,7 +2283,7 @@ h1, h2, h3, .brand-name, .stat-value {
   gap: 6px;
   padding: 0;
   margin: 0;
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   color: var(--text-muted);
 }
 
@@ -2165,102 +2295,60 @@ h1, h2, h3, .brand-name, .stat-value {
 
 .breadcrumb-item-custom.clickable {
   cursor: pointer;
-  color: var(--accent-teal);
+  color: var(--accent-primary);
   font-weight: 600;
-  transition: opacity 0.15s;
 }
 
 .breadcrumb-item-custom.clickable:hover {
   text-decoration: underline;
-  opacity: 0.9;
 }
 
 .breadcrumb-sep {
   opacity: 0.45;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
 }
 
-/* Botón pulsante MangaDex Live en Header */
-.btn-mangadex-pulse {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #ff6b35, #ff3366);
-  color: #fff;
-  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.btn-mangadex-pulse:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 51, 102, 0.5);
-}
-
-/* Botón Flotante de Retroceso Rápido (FAB) */
+/* Botón Flotante de Retroceso Minimalista */
 .floating-back-fab {
   position: fixed;
-  bottom: 84px;
+  bottom: 82px;
   left: 20px;
   z-index: 45;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 11px 18px;
+  gap: 6px;
+  padding: 9px 16px;
   border-radius: 999px;
-  background: rgba(15, 20, 34, 0.92);
-  backdrop-filter: blur(12px);
-  border: 1.5px solid var(--accent-primary);
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 0.88rem;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55), 0 0 16px var(--glow-primary);
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
-  animation: fabPopIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  font-weight: 600;
+  font-size: 0.85rem;
+  box-shadow: var(--shadow-elevated);
+  transition: transform 0.18s ease, border-color 0.18s ease;
 }
 
 .floating-back-fab:hover {
-  transform: translateY(-3px) scale(1.03);
-  background: var(--accent-primary);
+  transform: translateY(-2px);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
 }
 
 @media (min-width: 961px) {
   .floating-back-fab {
     left: calc(var(--sidebar-width) + 24px);
-    bottom: 28px;
+    bottom: 24px;
   }
 }
 
-/* Animaciones de entrada de vistas y tarjetas */
-@keyframes fabPopIn {
-  from {
-    opacity: 0;
-    transform: translateY(16px) scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes cardReveal {
-  from {
-    opacity: 0;
-    transform: translateY(18px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
+/* ==========================================================================
+   Estantería Minimalista Inspirada en Tachimanga (Pósters Limpios)
+   ========================================================================== */
 
 @keyframes viewFadeIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
@@ -2269,79 +2357,254 @@ h1, h2, h3, .brand-name, .stat-value {
 }
 
 .view-animate {
-  animation: viewFadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: viewFadeIn 0.2s ease-out;
 }
 
-.series-card {
-  animation: cardReveal 0.36s cubic-bezier(0.16, 1, 0.3, 1) both;
-  transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.26s ease,
-              box-shadow 0.26s ease;
+/* Cuadrícula modo Compacto / Estantería Tachimanga */
+.series-grid.compact-shelf {
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: 18px 14px;
 }
 
-.series-card:hover {
-  transform: translateY(-7px);
-  border-color: var(--accent-primary);
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.5), 0 0 22px var(--glow-primary);
+.series-card.tachi-poster-card {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  transition: transform 0.2s ease;
 }
 
-.card-cover-img {
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+.series-card.tachi-poster-card:hover {
+  transform: translateY(-4px);
 }
 
-.series-card:hover .card-cover-img {
-  transform: scale(1.06);
+.tachi-poster-card .card-cover-wrap {
+  aspect-ratio: 2 / 3;
+  border-radius: 11px;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
+  background-color: var(--bg-elevated);
+  position: relative;
 }
 
-/* Panel Hero de MangaDex API en Explorar */
-.mangadex-hero-banner {
-  background: linear-gradient(135deg, rgba(255, 107, 53, 0.14) 0%, rgba(139, 92, 246, 0.18) 55%, rgba(0, 240, 200, 0.1) 100%);
-  border: 1px solid rgba(255, 107, 53, 0.38);
-  border-radius: var(--radius-lg);
-  padding: 20px 22px;
+.tachi-poster-card .card-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.tachi-poster-card:hover .card-cover-img {
+  transform: scale(1.03);
+}
+
+/* Píldora minimalista de capítulos sin leer en esquina superior izquierda (estilo Tachimanga) */
+.tachi-unread-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background-color: var(--accent-primary);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  z-index: 2;
+}
+
+.tachi-source-tag {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background-color: rgba(25, 28, 33, 0.75);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+  font-size: 0.64rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 5px;
+}
+
+.tachi-poster-meta {
+  padding: 2px 2px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tachi-poster-title {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.tachi-poster-sub {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ==========================================================================
+   Panel de Repositorios y Fuentes API Optimizadas (Estilo Tachimanga Sources)
+   ========================================================================== */
+
+.repos-section-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 18px 20px;
   margin-bottom: 22px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.32);
+  box-shadow: var(--shadow-card);
+}
+
+.repos-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+  margin-bottom: 14px;
+}
+
+.repo-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  transition: border-color 0.16s ease;
+}
+
+.repo-item-row.active-repo {
+  border-color: var(--accent-primary);
+  background-color: var(--accent-soft-bg);
+}
+
+.repo-icon-box {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-primary);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.repo-meta-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.repo-title-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.repo-sub-line {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.repo-ping-badge {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--accent-teal);
+  white-space: nowrap;
 }
 
 .mangadex-quick-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 7px;
   margin-top: 12px;
 }
 
 .md-quick-chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 13px;
+  gap: 5px;
+  padding: 5px 12px;
   border-radius: 999px;
-  font-size: 0.79rem;
-  font-weight: 700;
-  background-color: rgba(15, 20, 34, 0.75);
+  font-size: 0.78rem;
+  font-weight: 600;
+  background-color: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
-  transition: all 0.2s ease;
+  transition: all 0.16s ease;
 }
 
 .md-quick-chip:hover,
 .md-quick-chip.active {
-  background: linear-gradient(135deg, #ff6b35, var(--accent-primary));
+  background-color: var(--accent-primary);
   color: #ffffff;
-  border-color: transparent;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.35);
+  border-color: var(--accent-primary);
 }
 
 .mangadex-badge-pill {
-  background: linear-gradient(135deg, #ff6b35, #ff3366);
-  color: #fff;
-  border: none;
+  background-color: var(--accent-soft-bg);
+  color: var(--accent-primary);
+  border: 1px solid var(--border-subtle);
   padding: 2px 8px;
   border-radius: 999px;
   font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
+  font-weight: 700;
+}
+
+/* Ajustes de tarjetas y contenedores para modo claro pastel */
+.stat-card,
+.detail-hero,
+.chapters-section,
+.feed-card,
+.architecture-banner,
+.empty-state,
+.modal-card,
+.source-Notice-card {
+  background-color: var(--bg-card);
+  border-color: var(--border-subtle);
+  box-shadow: var(--shadow-card);
+}
+
+.detail-synopsis,
+.tags-manager-box,
+.chapter-item {
+  background-color: var(--bg-surface);
+  border-color: var(--border-subtle);
+}
+
+.mobile-bottom-nav {
+  background-color: var(--bg-surface);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.mobile-nav-item.active {
+  color: var(--accent-primary);
 }
 
 /* Spinner de carga en el lector */
@@ -2354,9 +2617,13 @@ h1, h2, h3, .brand-name, .stat-value {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  background: rgba(9, 11, 18, 0.82);
+  background: rgba(25, 28, 33, 0.85);
   backdrop-filter: blur(6px);
-  color: var(--text-main);
+  color: #ECEFF4;
   font-weight: 600;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
+}
+
+.spinner-pastel {
+  color: var(--accent-primary);
 }

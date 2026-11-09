@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """
-Servidor HTTP local para MangaShelf PWA v3 (Edición MangaDex + Bootstrap UX).
-Configura tipos MIME para .webmanifest, .cbz, .epub y módulos ES6,
-inyecta encabezados de seguridad y provee un proxy transparente para la API oficial
-de MangaDex (api.mangadex.org, portadas uploads.mangadex.org y servidor de páginas At-Home)
-evitando bloqueos de CORS o hotlinking en el navegador.
+Servidor HTTP local para MangaShelf PWA v3.5 (Minimalist Pastel Edition).
+Incluye caché en memoria (TTL) para optimizar las consultas a los repositorios
+remotos (MangaDex API, portadas y servidor At-Home), reduciendo la latencia y
+evitando llamadas repetidas.
 """
 
 import http.server
@@ -12,12 +11,42 @@ import json
 import socket
 import socketserver
 import sys
+import threading
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
 
-PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8080
-USER_AGENT = 'MangaShelf-PWA/3.0 (https://github.com/grecco225/MangaShelf)'
+PORT = int(sys.argv[1]) if len(sys.argv[1:]) >= 1 else 8080
+USER_AGENT = 'MangaShelf-Minimal-PWA/3.5 (https://github.com/grecco225/MangaShelf)'
+
+# Caché en memoria thread-safe para acelerar respuestas de API y portadas
+_CACHE_LOCK = threading.Lock()
+_RESPONSE_CACHE = {}  # url -> (expire_ts, status_code, content_type, body_bytes)
+MAX_CACHE_ENTRIES = 250
+
+
+def get_cached_response(url):
+    now = time.time()
+    with _CACHE_LOCK:
+        entry = _RESPONSE_CACHE.get(url)
+        if not entry:
+            return None
+        expire_ts, status, content_type, body = entry
+        if now > expire_ts:
+            del _RESPONSE_CACHE[url]
+            return None
+        return status, content_type, body
+
+
+def set_cached_response(url, status, content_type, body, ttl_seconds=300):
+    now = time.time()
+    with _CACHE_LOCK:
+        if len(_RESPONSE_CACHE) >= MAX_CACHE_ENTRIES:
+            # Eliminar la entrada más antigua
+            oldest_key = next(iter(_RESPONSE_CACHE))
+            del _RESPONSE_CACHE[oldest_key]
+        _RESPONSE_CACHE[url] = (now + ttl_seconds, status, content_type, body)
 
 
 class ThreadingHTTPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
@@ -41,7 +70,6 @@ class MangaShelfHandler(http.server.SimpleHTTPRequestHandler):
     }
 
     def end_headers(self):
-        self.send_header('Cache-Control', 'no-cache')
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('X-Content-Type-Options', 'nosniff')
         self.send_header('X-Frame-Options', 'SAMEORIGIN')
@@ -61,21 +89,29 @@ class MangaShelfHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
 
-        # 1. Proxy JSON oficial para https://api.mangadex.org/...
+        # 1. Proxy optimizado con caché para https://api.mangadex.org/...
         if parsed.path.startswith('/api/mangadex/'):
             subpath = parsed.path[len('/api/mangadex/'):]
             target_url = f'https://api.mangadex.org/{subpath}'
             if parsed.query:
                 target_url += f'?{parsed.query}'
-            return self._proxy_request(target_url, default_content_type='application/json; charset=utf-8')
+            return self._proxy_request(
+                target_url,
+                default_content_type='application/json; charset=utf-8',
+                cache_ttl=180
+            )
 
-        # 2. Proxy de portadas oficiales https://uploads.mangadex.org/covers/...
+        # 2. Proxy optimizado con caché para portadas https://uploads.mangadex.org/covers/...
         if parsed.path.startswith('/api/mangadex-cover/'):
             subpath = parsed.path[len('/api/mangadex-cover/'):]
             target_url = f'https://uploads.mangadex.org/covers/{subpath}'
-            return self._proxy_request(target_url, default_content_type='image/jpeg', cache_max_age=86400)
+            return self._proxy_request(
+                target_url,
+                default_content_type='image/jpeg',
+                cache_ttl=3600
+            )
 
-        # 3. Proxy de páginas de capítulos MangaDex At-Home
+        # 3. Proxy optimizado para páginas de capítulos MangaDex At-Home
         if parsed.path == '/api/mangadex-page':
             qs = urllib.parse.parse_qs(parsed.query)
             raw_url = qs.get('url', [''])[0]
@@ -88,11 +124,27 @@ class MangaShelfHandler(http.server.SimpleHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(b'{"error": "Invalid MangaDex image URL"}')
                 return
-            return self._proxy_request(raw_url, default_content_type='image/jpeg', cache_max_age=86400)
+            return self._proxy_request(
+                raw_url,
+                default_content_type='image/jpeg',
+                cache_ttl=1800
+            )
 
         return super().do_GET()
 
-    def _proxy_request(self, target_url, default_content_type='application/json', cache_max_age=0):
+    def _proxy_request(self, target_url, default_content_type='application/json', cache_ttl=180):
+        cached = get_cached_response(target_url)
+        if cached is not None:
+            status, content_type, body = cached
+            self.send_response(status)
+            self.send_header('Content-Type', content_type)
+            self.send_header('Content-Length', str(len(body)))
+            self.send_header('X-Cache', 'HIT')
+            self.send_header('Cache-Control', f'public, max-age={cache_ttl}')
+            self.end_headers()
+            self.wfile.write(body)
+            return
+
         req = urllib.request.Request(
             target_url,
             headers={
@@ -105,11 +157,14 @@ class MangaShelfHandler(http.server.SimpleHTTPRequestHandler):
             with urllib.request.urlopen(req, timeout=15) as resp:
                 body = resp.read()
                 content_type = resp.headers.get('Content-Type', default_content_type)
+                if resp.status == 200 and cache_ttl > 0:
+                    set_cached_response(target_url, resp.status, content_type, body, cache_ttl)
                 self.send_response(resp.status)
                 self.send_header('Content-Type', content_type)
                 self.send_header('Content-Length', str(len(body)))
-                if cache_max_age > 0:
-                    self.send_header('Cache-Control', f'public, max-age={cache_max_age}')
+                self.send_header('X-Cache', 'MISS')
+                if cache_ttl > 0:
+                    self.send_header('Cache-Control', f'public, max-age={cache_ttl}')
                 self.end_headers()
                 self.wfile.write(body)
         except urllib.error.HTTPError as e:
@@ -142,13 +197,11 @@ if __name__ == '__main__':
     lan_ip = get_lan_ip()
     with ThreadingHTTPServer(('0.0.0.0', PORT), MangaShelfHandler) as httpd:
         print('=' * 68)
-        print('  MangaShelf PWA v3 — Servidor Local + Proxy Oficial MangaDex API')
+        print('  MangaShelf v3.5 — Minimalist Pastel Edition + API Cache')
         print('=' * 68)
         print(f'  • En este PC:          http://localhost:{PORT}')
         print(f'  • En tu red Wi-Fi:     http://{lan_ip}:{PORT}')
-        print(f'  • Proxy MangaDex API:  http://localhost:{PORT}/api/mangadex/manga')
         print('=' * 68)
-        print('  Presiona Ctrl+C para detener el servidor.')
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:

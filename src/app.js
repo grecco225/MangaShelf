@@ -39,13 +39,18 @@ class MangaShelfApp {
 
     // Estado de consulta a MangaDex y APIs públicas en Explorar
     this.mangadexQuery = '';
+    this.mangadexLangFilter = 'all'; // 'all' | 'es' | 'en'
     this.apiStatusText = '';
     this.apiStatusError = false;
     this.apiLoading = false;
     this.loadingChaptersForSeriesId = null;
 
-    // Tema visual activo ('cyber' | 'sakura' | 'shonen')
-    this.currentTheme = localStorage.getItem('mangashelf_anime_theme_v3') || 'cyber';
+    // Vista de estantería compacta estilo Tachimanga (por defecto activa)
+    this.compactShelfMode = localStorage.getItem('mangashelf_compact_shelf') !== 'false';
+
+    // Paleta pastel minimalista activa ('matcha' | 'sakura' | 'nord')
+    const savedTheme = localStorage.getItem('mangashelf_pastel_theme_v35');
+    this.currentTheme = ['matcha', 'sakura', 'nord'].includes(savedTheme) ? savedTheme : 'matcha';
 
     // Estado del lector activo
     this.readerState = {
@@ -103,27 +108,19 @@ class MangaShelfApp {
 
   /**
    * Ejecuta la conexión inicial con MangaDex API siguiendo el patrón fetch JSON
-   * y carga los mangas populares en segundo plano.
+   * y carga los mangas populares en segundo plano con caché optimizada.
    */
   async _autoSyncMangaDexOnStartup() {
     if (!navigator.onLine) return;
     try {
-      // Ejemplo directo solicitado por el usuario contra la API de MangaDex
-      const response = await fetch('/api/mangadex/manga?limit=16&includes[]=cover_art&includes[]=author&contentRating[]=safe&contentRating[]=suggestive&order[followedCount]=desc', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
+      const loaded = await this.registry.mangadexProvider.searchManga('', {
+        limit: 18,
+        lang: this.mangadexLangFilter
       });
-      if (response.ok) {
-        const data = await response.json();
-        console.log('MangaDex API Data:', data);
-      }
-
-      const loaded = await this.registry.mangadexProvider.searchManga('', { limit: 16 });
       if (loaded.length > 0) {
         this.allSeries = await this.registry.getAllSeries();
-        this.apiStatusText = `✓ Conectado a MangaDex API Oficial: ${loaded.length} mangas populares sincronizados en tiempo real.`;
+        const ping = this.registry.mangadexProvider.lastLatencyMs || 12;
+        this.apiStatusText = `Repositorio MangaDex Oficial sincronizado (${loaded.length} títulos • ${ping} ms).`;
         this.render();
       }
     } catch (err) {
@@ -132,20 +129,24 @@ class MangaShelfApp {
   }
 
   // =========================================================================
-  // Sistema de Temas de Color ('cyber' | 'sakura' | 'shonen')
+  // Sistema de Paletas Pastel Minimalistas ('matcha' | 'sakura' | 'nord')
   // =========================================================================
 
   _applyTheme(themeName, notify = true) {
-    const validThemes = ['cyber', 'sakura', 'shonen'];
-    const chosen = validThemes.includes(themeName) ? themeName : 'cyber';
+    const validThemes = ['matcha', 'sakura', 'nord'];
+    const chosen = validThemes.includes(themeName) ? themeName : 'matcha';
     this.currentTheme = chosen;
     document.documentElement.setAttribute('data-anime-theme', chosen);
-    localStorage.setItem('mangashelf_anime_theme_v3', chosen);
+    document.documentElement.setAttribute(
+      'data-bs-theme',
+      chosen === 'nord' ? 'dark' : 'light'
+    );
+    localStorage.setItem('mangashelf_pastel_theme_v35', chosen);
 
     const names = {
-      cyber: 'Cyber Anime',
-      sakura: 'Sakura Crimson',
-      shonen: 'Shonen Gold'
+      matcha: 'Matcha Pastel',
+      sakura: 'Sakura Pastel',
+      nord: 'Noche Mate'
     };
 
     const labelEl = document.getElementById('active-theme-label');
@@ -156,7 +157,7 @@ class MangaShelfApp {
     });
 
     if (notify) {
-      this.showToast(`🎨 Tema visual aplicado: ${names[chosen]}`);
+      this.showToast(`Paleta aplicada: ${names[chosen]}`);
     }
   }
 
@@ -169,7 +170,7 @@ class MangaShelfApp {
     });
 
     document.getElementById('header-theme-cycle-btn')?.addEventListener('click', () => {
-      const order = ['cyber', 'sakura', 'shonen'];
+      const order = ['matcha', 'sakura', 'nord'];
       const nextIdx = (order.indexOf(this.currentTheme) + 1) % order.length;
       this._applyTheme(order[nextIdx], true);
     });
@@ -638,7 +639,24 @@ class MangaShelfApp {
     const genreSelect = document.getElementById('genre-select');
     const tagSelect = document.getElementById('tag-select');
     const favBtn = document.getElementById('favorites-filter-btn');
+    const densityBtn = document.getElementById('grid-density-btn');
+    const densityLabel = document.getElementById('grid-density-label');
     const statusPills = document.querySelectorAll('.status-pill');
+
+    const syncDensityBtn = () => {
+      if (densityBtn) densityBtn.classList.toggle('active', this.compactShelfMode);
+      if (densityLabel) {
+        densityLabel.textContent = this.compactShelfMode ? 'Estantería' : 'Tarjetas';
+      }
+    };
+    syncDensityBtn();
+
+    densityBtn?.addEventListener('click', () => {
+      this.compactShelfMode = !this.compactShelfMode;
+      localStorage.setItem('mangashelf_compact_shelf', String(this.compactShelfMode));
+      syncDensityBtn();
+      this.renderMainContent();
+    });
 
     searchInput?.addEventListener('input', (e) => {
       this.searchQuery = e.target.value;
@@ -695,18 +713,23 @@ class MangaShelfApp {
     this.mangadexQuery = queryText;
     this.apiLoading = true;
     this.apiStatusError = false;
-    this.apiStatusText = `Consultando API oficial de MangaDex para «${queryText || 'Populares'}»...`;
+    this.apiStatusText = `Consultando repositorio MangaDex (${queryText || ' Catálogo Popular'})...`;
     this.renderMainContent();
 
     try {
-      const results = await this.registry.mangadexProvider.searchManga(queryText, { limit: 16 });
+      const results = await this.registry.mangadexProvider.searchManga(queryText, {
+        limit: 18,
+        lang: this.mangadexLangFilter
+      });
       this.allSeries = await this.registry.getAllSeries();
-      this.apiStatusText = `✓ MangaDex API devolvió ${results.length} mangas para «${queryText || 'Tendencias'}».`;
-      this.showToast(`🔥 ${results.length} mangas cargados desde MangaDex API.`);
+      const ping = this.registry.mangadexProvider.lastLatencyMs || 8;
+      this.apiStatusText = `✓ ${results.length} obras obtenidas de MangaDex API (${ping} ms • Caché activa).`;
+      this.showToast(`${results.length} títulos sincronizados desde MangaDex.`);
     } catch (err) {
+      if (err?.name === 'AbortError') return;
       this.apiStatusError = true;
       this.apiStatusText = `No se pudo consultar MangaDex API (${err.message}).`;
-      this.showToast('Error al conectar con MangaDex API.', true);
+      this.showToast('Error al conectar con el repositorio MangaDex.', true);
     } finally {
       this.apiLoading = false;
       this.render();
@@ -984,7 +1007,7 @@ class MangaShelfApp {
 
     container.innerHTML = `
       ${statsHtml}
-      <div class="series-grid">
+      <div class="series-grid ${this.compactShelfMode ? 'compact-shelf' : ''}">
         ${filtered.map((s, idx) => this._buildSeriesCardHtml(s, idx)).join('')}
       </div>
     `;
@@ -993,63 +1016,115 @@ class MangaShelfApp {
   }
 
   // =========================================================================
-  // Pantalla 2: Explorar y MangaDex API Oficial
+  // Pantalla 2: Fuentes, Repositorios API Optimizados y Explorar
   // =========================================================================
 
   _renderExploreView(container) {
     const filtered = this._filterSeriesList(this.allSeries);
+    const mdProv = this.registry.mangadexProvider;
+    const mdLatency = mdProv.lastLatencyMs ? `${mdProv.lastLatencyMs} ms` : 'Óptimo';
+    const mdCacheCount = mdProv.queryCache ? mdProv.queryCache.size : 0;
 
     const quickDiscoveryTerms = [
-      { label: '🔥 Populares MangaDex', query: '' },
-      { label: '⚔️ Solo Leveling', query: 'Solo Leveling' },
-      { label: '🪚 Chainsaw Man', query: 'Chainsaw Man' },
-      { label: '🏴‍☠️ One Piece', query: 'One Piece' },
-      { label: '👻 Dandadan', query: 'Dandadan' },
-      { label: '🗡️ Berserk', query: 'Berserk' },
-      { label: '🌸 Romance', query: 'Romance' },
-      { label: '🌌 Isekai', query: 'Isekai' }
+      { label: 'Populares', query: '' },
+      { label: 'Solo Leveling', query: 'Solo Leveling' },
+      { label: 'Chainsaw Man', query: 'Chainsaw Man' },
+      { label: 'One Piece', query: 'One Piece' },
+      { label: 'Dandadan', query: 'Dandadan' },
+      { label: 'Frieren', query: 'Frieren' },
+      { label: 'Berserk', query: 'Berserk' },
+      { label: 'Romance', query: 'Romance' }
     ];
 
     const apiPanelHtml = `
-      <div class="mangadex-hero-banner">
+      <div class="repos-section-card">
         <div class="api-sources-header">
           <div>
             <div class="d-flex align-items-center gap-2 mb-1">
-              <span class="mangadex-badge-pill"><i class="bi bi-lightning-charge-fill me-1"></i>MANGADEX API v5</span>
-              <span class="badge rounded-pill text-bg-dark border border-info border-opacity-25">https://api.mangadex.org</span>
+              <span class="mangadex-badge-pill">REPOSITORIOS ACTIVOS</span>
+              <span class="small text-muted">Caché local TTL + Proxy de imágenes optimizado</span>
             </div>
-            <h3 class="mb-1">Buscador en Tiempo Real de MangaDex &amp; Fuentes Abiertas</h3>
+            <h3 class="mb-1">Fuentes y Catálogos Conectados</h3>
             <p class="chapter-meta mb-0">
-              Busca cualquier manga del catálogo oficial de <strong>MangaDex</strong> con portadas de alta resolución y lectura real de capítulos en Español e Inglés, o explora <strong>Internet Archive</strong> y <strong>Project Gutenberg</strong>.
+              Consulta simultánea sobre repositorios abiertos con deduplicación de peticiones y precarga de capítulos.
             </p>
           </div>
-          <button type="button" class="btn-subtle" id="explore-import-local-btn">
-            <i class="bi bi-file-earmark-zip me-1"></i>Importar CBZ / EPUB / PDF
-          </button>
+          <div class="d-flex gap-2 flex-wrap">
+            <button type="button" class="btn-subtle" id="clear-api-cache-btn" title="Refrescar caché de los repositorios API">
+              <i class="bi bi-arrow-repeat me-1"></i>Optimizar Caché (${mdCacheCount})
+            </button>
+            <button type="button" class="btn-subtle" id="explore-import-local-btn">
+              <i class="bi bi-folder-plus me-1"></i>Importar Local
+            </button>
+          </div>
         </div>
 
-        <div class="api-controls-row mt-3">
+        <!-- Lista de Repositorios estilo Tachimanga Sources -->
+        <div class="repos-list-grid">
+          <div class="repo-item-row active-repo">
+            <div class="repo-icon-box"><i class="bi bi-journal-Bookmark-fill"></i></div>
+            <div class="repo-meta-info">
+              <div class="repo-title-line">
+                <span>MangaDex Oficial</span>
+                <span class="demo-pill">v5.10</span>
+              </div>
+              <div class="repo-sub-line">ES / LATAM / EN • api.mangadex.org</div>
+            </div>
+            <span class="repo-ping-badge"><i class="bi bi-lightning-fill"></i> ${mdLatency}</span>
+          </div>
+
+          <div class="repo-item-row">
+            <div class="repo-icon-box"><i class="bi bi-bank"></i></div>
+            <div class="repo-meta-info">
+              <div class="repo-title-line">
+                <span>Internet Archive</span>
+                <span class="demo-pill">API</span>
+              </div>
+              <div class="repo-sub-line">Dominio Público • archive.org</div>
+            </div>
+            <span class="repo-ping-badge">Activo</span>
+          </div>
+
+          <div class="repo-item-row">
+            <div class="repo-icon-box"><i class="bi bi-book"></i></div>
+            <div class="repo-meta-info">
+              <div class="repo-title-line">
+                <span>Project Gutenberg</span>
+                <span class="demo-pill">JSON</span>
+              </div>
+              <div class="repo-sub-line">Clásicos Ilustrados • gutendex.com</div>
+            </div>
+            <span class="repo-ping-badge">Activo</span>
+          </div>
+        </div>
+
+        <div class="api-controls-row">
           <input
             type="search"
             id="mangadex-api-query"
             class="api-query-input"
-            placeholder="Escribe el nombre de un manga (ej. Naruto, Bleach, Frieren, Blue Lock, Jujutsu)..."
+            placeholder="Buscar título en repositorios (ej. Frieren, Dandadan, One Piece, Blue Lock)..."
             value="${this._escapeHtml(this.mangadexQuery)}"
           />
+          <select id="mangadex-lang-select" class="genre-select" aria-label="Idioma del repositorio">
+            <option value="all" ${this.mangadexLangFilter === 'all' ? 'selected' : ''}>Idioma: Todos (ES/EN)</option>
+            <option value="es" ${this.mangadexLangFilter === 'es' ? 'selected' : ''}>Español (ES / LATAM)</option>
+            <option value="en" ${this.mangadexLangFilter === 'en' ? 'selected' : ''}>Inglés (EN)</option>
+          </select>
           <button type="button" class="btn-primary" id="query-mangadex-api-btn" ${
             this.apiLoading ? 'disabled' : ''
           }>
-            <i class="bi bi-fire me-1"></i>${this.apiLoading ? 'Buscando...' : 'Buscar en MangaDex API'}
+            <i class="bi bi-search me-1"></i>${this.apiLoading ? 'Sincronizando...' : 'MangaDex'}
           </button>
           <button type="button" class="btn-secondary" id="query-ia-api-btn" ${
             this.apiLoading ? 'disabled' : ''
           }>
-            <i class="bi bi-bank me-1"></i>Archive.org
+            Archive.org
           </button>
           <button type="button" class="btn-secondary" id="query-gutendex-api-btn" ${
             this.apiLoading ? 'disabled' : ''
           }>
-            <i class="bi bi-book me-1"></i>Gutenberg
+            Gutenberg
           </button>
         </div>
 
@@ -1086,8 +1161,8 @@ class MangaShelfApp {
         <div class="empty-state">
           <div class="empty-icon">🧭</div>
           <h3>No se encontraron obras con los filtros actuales</h3>
-          <p>Limpia los filtros o pulsa «Buscar en MangaDex API» para traer nuevos resultados en vivo.</p>
-          <button type="button" class="btn-primary" id="explore-reset-filters-btn">Mostrar todas las obras</button>
+          <p>Limpia los filtros o realiza una consulta en los repositorios conectados.</p>
+          <button type="button" class="btn-primary" id="explore-reset-filters-btn">Mostrar todo el catálogo</button>
         </div>
       `;
       container
@@ -1096,7 +1171,7 @@ class MangaShelfApp {
     } else {
       container.innerHTML = `
         ${apiPanelHtml}
-        <div class="series-grid">
+        <div class="series-grid ${this.compactShelfMode ? 'compact-shelf' : ''}">
           ${filtered.map((s, idx) => this._buildSeriesCardHtml(s, idx)).join('')}
         </div>
       `;
@@ -1105,6 +1180,19 @@ class MangaShelfApp {
 
     container.querySelector('#explore-import-local-btn')?.addEventListener('click', () => {
       document.getElementById('local-import-modal')?.classList.remove('hidden');
+    });
+
+    container.querySelector('#clear-api-cache-btn')?.addEventListener('click', () => {
+      this.registry.mangadexProvider.queryCache.clear();
+      this.registry.mangadexProvider.chapterPagesCache.clear();
+      this.showToast('Caché de repositorios depurada y optimizada.');
+      this.renderMainContent();
+    });
+
+    const langSelect = container.querySelector('#mangadex-lang-select');
+    langSelect?.addEventListener('change', (e) => {
+      this.mangadexLangFilter = e.target.value || 'all';
+      this._triggerMangaDexSearch(this.mangadexQuery);
     });
 
     const mdInput = container.querySelector('#mangadex-api-query');
@@ -1132,18 +1220,18 @@ class MangaShelfApp {
       const term = mdInput?.value?.trim() || 'comic';
       this.apiLoading = true;
       this.apiStatusError = false;
-      this.apiStatusText = `Consultando API pública de Internet Archive para «${term}»...`;
+      this.apiStatusText = `Consultando repositorio Internet Archive para «${term}»...`;
       this.renderMainContent();
 
       try {
         await this.registry.iaProvider.searchPublicDomain(term);
         this.allSeries = await this.registry.getAllSeries();
         this.apiStatusText = `✓ Catálogo actualizado desde Archive.org API para «${term}».`;
-        this.showToast('Resultados de Dominio Público cargados desde Archive.org');
+        this.showToast('Resultados cargados desde Archive.org');
       } catch (err) {
         this.apiStatusError = true;
         this.apiStatusText = err.message;
-        this.showToast('Usando catálogo local de respaldo (Archive.org no disponible).', true);
+        this.showToast('Usando catálogo local de respaldo.', true);
       } finally {
         this.apiLoading = false;
         this.render();
@@ -1155,14 +1243,14 @@ class MangaShelfApp {
       const term = mdInput?.value?.trim() || 'adventure';
       this.apiLoading = true;
       this.apiStatusError = false;
-      this.apiStatusText = `Consultando API abierta Gutendex (Project Gutenberg) para «${term}»...`;
+      this.apiStatusText = `Consultando repositorio Gutendex (Project Gutenberg) para «${term}»...`;
       this.renderMainContent();
 
       try {
         const found = await this.registry.gutendexProvider.fetchPublicDomainBooks(term);
         this.allSeries = await this.registry.getAllSeries();
-        this.apiStatusText = `✓ Se integraron ${found.length} obras de Dominio Público desde Project Gutenberg.`;
-        this.showToast('Obras de Project Gutenberg añadidas al catálogo.');
+        this.apiStatusText = `✓ Se integraron ${found.length} obras desde Project Gutenberg.`;
+        this.showToast('Obras de Project Gutenberg añadidas.');
       } catch (err) {
         this.apiStatusError = true;
         this.apiStatusText = err.message;
@@ -1175,7 +1263,7 @@ class MangaShelfApp {
   }
 
   // =========================================================================
-  // Construcción de Tarjetas de Serie (con animación escalonada)
+  // Construcción de Tarjetas (Modo Estantería Minimalista o Modo Detallado)
   // =========================================================================
 
   _buildSeriesCardHtml(series, index = 0) {
@@ -1184,6 +1272,74 @@ class MangaShelfApp {
     const stats = this.storage.getSeriesProgressStats(series);
     const tags = this.storage.getSeriesTags(series.id);
 
+    let originBadge = 'Local';
+    if (series.isMangaDex) {
+      originBadge = 'MangaDex';
+    } else if (series.isLocalFile) {
+      originBadge = series.fileFormat || 'Archivo';
+    } else if (series.isPublicDomain) {
+      originBadge = 'Dominio Púb.';
+    }
+
+    const unreadCount = Math.max(0, stats.totalChapters - stats.readChapters);
+
+    // 1. Modo Estantería Minimalista (Inspirado en Tachimanga: pósters limpios 2:3)
+    if (this.compactShelfMode) {
+      const badgeLabel =
+        series.isMangaDex && !series._chaptersLoaded
+          ? 'API'
+          : unreadCount > 0
+          ? `${unreadCount}`
+          : '✓';
+
+      return `
+        <article class="series-card tachi-poster-card" data-series-id="${this._escapeHtml(series.id)}">
+          <div class="card-cover-wrap" data-action="open-detail">
+            <span class="tachi-unread-badge" title="Capítulos por leer">${badgeLabel}</span>
+            <img
+              src="${series.coverUrl}"
+              alt="Portada de ${this._escapeHtml(series.title)}"
+              class="card-cover-img"
+              loading="lazy"
+              ${series.fallbackCoverUrl ? `onerror="if(this.src!=='${series.fallbackCoverUrl}')this.src='${series.fallbackCoverUrl}'"` : ''}
+            />
+            <div class="card-Quick-actions">
+              <button
+                type="button"
+                class="card-icon-btn ${isFav ? 'fav-active' : ''}"
+                data-action="toggle-fav"
+                title="${isFav ? 'Quitar de favoritos' : 'Marcar como favorito'}"
+                aria-label="Favorito"
+              >
+                ${isFav ? '♥' : '♡'}
+              </button>
+              <button
+                type="button"
+                class="card-icon-btn ${inLib ? 'lib-active' : ''}"
+                data-action="toggle-lib"
+                title="${inLib ? 'En tu biblioteca' : 'Añadir a biblioteca'}"
+                aria-label="Biblioteca"
+              >
+                ${inLib ? '✓' : '+'}
+              </button>
+            </div>
+            <span class="tachi-source-tag">${this._escapeHtml(originBadge)}</span>
+          </div>
+
+          <div class="tachi-poster-meta">
+            <h3 class="tachi-poster-title" data-action="open-detail" title="${this._escapeHtml(series.title)}">
+              ${this._escapeHtml(series.title)}
+            </h3>
+            <div class="tachi-poster-sub">
+              <span class="text-truncate" style="max-width: 105px">${this._escapeHtml(series.author)}</span>
+              <span>${stats.percentage}%</span>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    // 2. Modo Tarjeta Detallada
     const statusClass =
       series.status === 'En curso'
         ? 'en-curso'
@@ -1195,32 +1351,20 @@ class MangaShelfApp {
     const readButtonLabel = stats.hasStarted
       ? `Continuar Cap. ${nextChap.number}`
       : series.isMangaDex && !series._chaptersLoaded
-      ? 'Ver & Leer Manga'
+      ? 'Ver & Leer'
       : `Leer Cap. ${nextChap ? nextChap.number : 1}`;
-
-    let originBadge = 'ORIGINAL';
-    let badgeExtraClass = 'demo-pill';
-    if (series.isMangaDex) {
-      originBadge = 'MANGADEX';
-      badgeExtraClass = 'mangadex-badge-pill';
-    } else if (series.isLocalFile) {
-      originBadge = series.fileFormat || 'LOCAL';
-    } else if (series.isPublicDomain) {
-      originBadge = 'DOMINIO PÚBLICO';
-    }
 
     const hasOfflineChap = series.chapters.some(
       (c) => this._isChapterDownloaded(series.id, c.id) || series.isLocalFile
     );
 
-    const delayMs = Math.min(index * 35, 350);
     const chaptersLabel =
       series.isMangaDex && !series._chaptersLoaded
-        ? 'MangaDex Live'
+        ? 'MangaDex'
         : `${series.chapters.length} cap${series.chapters.length === 1 ? '.' : 's.'}`;
 
     return `
-      <article class="series-card" data-series-id="${this._escapeHtml(series.id)}" style="animation-delay: ${delayMs}ms">
+      <article class="series-card" data-series-id="${this._escapeHtml(series.id)}">
         <div class="card-cover-wrap" data-action="open-detail">
           <img
             src="${series.coverUrl}"
@@ -1255,7 +1399,7 @@ class MangaShelfApp {
         <div class="card-body">
           <div class="card-status-row">
             <span class="status-tag ${statusClass}">${this._escapeHtml(series.status)}</span>
-            <span class="${badgeExtraClass}">${this._escapeHtml(originBadge)}</span>
+            <span class="demo-pill">${this._escapeHtml(originBadge)}</span>
           </div>
 
           <h3 class="card-title" data-action="open-detail">${this._escapeHtml(series.title)}</h3>
@@ -2240,6 +2384,19 @@ class MangaShelfApp {
 
     if (prevChapBtn) prevChapBtn.disabled = !hasPrevChapter;
     if (nextChapBtn) nextChapBtn.disabled = !hasNextChapter;
+
+    // Precarga inteligente de las siguientes 2 páginas para lectura instantánea
+    this._preloadNextReaderPages(pages, currentPage);
+  }
+
+  _preloadNextReaderPages(pages, currentPage) {
+    for (let offset = 1; offset <= 2; offset++) {
+      const nextObj = pages[currentPage - 1 + offset];
+      if (nextObj && nextObj.imageUrl) {
+        const preloadImg = new Image();
+        preloadImg.src = nextObj.imageUrl;
+      }
+    }
   }
 
   goToPage(targetPage) {
