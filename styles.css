@@ -2627,3 +2627,582 @@ h1, h2, h3, .brand-name, .stat-value {
 .spinner-pastel {
   color: var(--accent-primary);
 }
+
+
+/* ==========================================================================
+   OPTIMIZACIÓN MÓVIL INTEGRAL (Smartphones Android & iOS • 320px a 900px)
+   Diseño nativo tipo Tachimanga: 3 columnas de pósters, barras deslizables
+   horizontales sin desbordamiento y cabecera compacta.
+   ========================================================================== */
+
+/* Prevenir cualquier desbordamiento horizontal en móviles */
+html,
+body,
+.app-layout,
+.main-wrapper,
+.content-area {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --mobile-nav-height: 62px;
+  }
+
+  /* 1. Cabecera superior ultracompacta sin desbordamiento */
+  .app-header {
+    padding: 8px 12px;
+    gap: 8px;
+    min-height: 54px;
+  }
+
+  .header-left {
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .mobile-logo {
+    width: 30px;
+    height: 30px;
+  }
+
+  /* En móvil ocultar breadcrumbs largos para dar espacio al título y botón Atrás */
+  .breadcrumb-nav {
+    display: none;
+  }
+
+  .header-title-group h1 {
+    font-size: 1.08rem;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 46vw;
+    margin: 0;
+  }
+
+  .btn-global-back {
+    padding: 6px 10px;
+    font-size: 0.78rem;
+    gap: 4px;
+  }
+
+  .header-actions {
+    gap: 6px;
+  }
+
+  /* Ocultar indicador de red en línea en la barra móvil (solo mostrar banner si está offline) */
+  #network-status {
+    display: none;
+  }
+
+  /* Botones de cabecera como iconos circulares/compactos de 36x36px en celular */
+  .header-actions .btn-subtle,
+  .header-actions .btn-pastel-accent,
+  .header-actions .btn-install {
+    padding: 7px 9px;
+    min-height: 36px;
+    font-size: 0.78rem;
+    border-radius: 9px;
+  }
+
+  .header-actions .btn-install span {
+    display: none;
+  }
+
+  /* 2. Barra de búsqueda y filtros compacta (Deslizable horizontalmente como app nativa) */
+  .controls-bar {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .search-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .search-input-wrapper {
+    min-width: 0;
+    width: 100%;
+  }
+
+  #search-input {
+    padding: 8px 34px 8px 36px;
+    font-size: 0.86rem;
+    border-radius: 10px;
+    min-height: 38px;
+  }
+
+  .search-icon {
+    left: 12px;
+    font-size: 0.85rem;
+  }
+
+  /* Filtros secundarios y píldoras de estado en una cinta horizontal deslizable */
+  .secondary-filters {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 6px;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .secondary-filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .genre-select,
+  .chip-toggle {
+    min-height: 34px;
+    padding: 5px 10px;
+    font-size: 0.78rem;
+    border-radius: 8px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .status-filter-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 6px;
+    scrollbar-width: none;
+  }
+
+  .status-filter-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .status-pills {
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+
+  .status-pill {
+    min-height: 30px;
+    padding: 4px 11px;
+    font-size: 0.76rem;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  /* 3. Área de contenido y cinta de estadísticas compacta */
+  .content-area {
+    padding: 10px 12px 24px;
+  }
+
+  .stats-strip {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .stat-card {
+    padding: 8px 6px;
+    border-radius: 10px;
+    text-align: center;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .stat-value {
+    font-size: 0.95rem;
+  }
+
+  .stat-label {
+    font-size: 0.63rem;
+    line-height: 1.15;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* 4. Estantería de Pósters en Celular: 3 Columnas Exactas (Estilo Tachimanga) */
+  .series-grid.compact-shelf {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px 8px;
+  }
+
+  /* Vista de tarjetas detalladas en celular: 2 columnas limpias */
+  .series-grid:not(.compact-shelf) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .tachi-poster-card .card-cover-wrap {
+    border-radius: 8px;
+  }
+
+  .tachi-unread-badge {
+    top: 5px;
+    left: 5px;
+    font-size: 0.62rem;
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  .tachi-source-tag {
+    bottom: 5px;
+    left: 5px;
+    font-size: 0.56rem;
+    padding: 1px 4px;
+  }
+
+  .tachi-poster-card .card-Quick-actions {
+    top: 5px;
+    right: 5px;
+    gap: 4px;
+  }
+
+  .tachi-poster-card .card-icon-btn {
+    width: 26px;
+    height: 26px;
+    font-size: 0.78rem;
+  }
+
+  .tachi-poster-title {
+    font-size: 0.76rem;
+    line-height: 1.22;
+  }
+
+  .tachi-poster-sub {
+    font-size: 0.66rem;
+  }
+
+  /* Tarjeta detallada adaptada a 2 columnas en móvil */
+  .series-card:not(.tachi-poster-card) .card-body {
+    padding: 9px;
+    gap: 5px;
+  }
+
+  .series-card:not(.tachi-poster-card) .card-title {
+    font-size: 0.84rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .series-card:not(.tachi-poster-card) .card-author {
+    font-size: 0.72rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .series-card:not(.tachi-poster-card) .card-genres {
+    display: none;
+  }
+
+  .series-card:not(.tachi-poster-card) .card-actions-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .series-card:not(.tachi-poster-card) .btn-card-read,
+  .series-card:not(.tachi-poster-card) .btn-card-lib {
+    min-height: 32px;
+    padding: 5px 8px;
+    font-size: 0.74rem;
+    width: 100%;
+  }
+
+  /* 5. Panel de Repositorios y Fuentes en Celular */
+  .repos-section-card {
+    padding: 12px;
+    margin-bottom: 14px;
+    border-radius: 12px;
+  }
+
+  .repos-section-card h3 {
+    font-size: 0.98rem;
+  }
+
+  .repos-section-card .chapter-meta {
+    font-size: 0.75rem;
+  }
+
+  /* Repositorios como cinta deslizable horizontal en móvil */
+  .repos-list-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 8px;
+    margin-top: 8px;
+    margin-bottom: 10px;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .repos-list-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .repo-item-row {
+    min-width: 215px;
+    padding: 8px 10px;
+    flex-shrink: 0;
+  }
+
+  .api-controls-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .api-query-input {
+    grid-column: 1 / -1;
+    min-width: 0;
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 0.84rem;
+  }
+
+  #mangadex-lang-select {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  #query-mangadex-api-btn {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-height: 38px;
+  }
+
+  .mangadex-quick-chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 6px;
+    margin-top: 8px;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .mangadex-quick-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .md-quick-chip {
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: 4px 10px;
+    font-size: 0.74rem;
+  }
+
+  /* 6. Ficha de Serie en Celular (Cabecera horizontal tipo Tachimanga) */
+  .detail-container {
+    gap: 14px;
+  }
+
+  .detail-hero {
+    display: flex;
+    flex-direction: column;
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .detail-cover {
+    width: 125px;
+    max-width: 125px;
+    margin: 0 auto;
+    border-radius: 10px;
+  }
+
+  .detail-title {
+    font-size: 1.22rem;
+    text-align: center;
+  }
+
+  .detail-author {
+    font-size: 0.82rem;
+    text-align: center;
+  }
+
+  .detail-badges,
+  .detail-info .card-genres {
+    justify-content: center;
+  }
+
+  .detail-synopsis {
+    font-size: 0.83rem;
+    padding: 10px 12px;
+    max-height: 130px;
+    overflow-y: auto;
+  }
+
+  .detail-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  #detail-read-btn {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .chapters-section {
+    padding: 12px;
+  }
+
+  .chapter-item {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .chapter-right-actions {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .chapter-right-actions button {
+    padding: 5px 10px;
+    min-height: 32px;
+    font-size: 0.76rem;
+  }
+
+  /* 7. Tarjetas de Actualizaciones e Historial en Celular */
+  .feed-card {
+    padding: 10px 12px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .feed-thumb {
+    width: 46px;
+    height: 64px;
+  }
+
+  .feed-series-title {
+    font-size: 0.88rem;
+  }
+
+  .feed-chapter-title {
+    font-size: 0.78rem;
+  }
+
+  .feed-actions {
+    width: 100%;
+    justify-content: flex-end;
+    padding-top: 6px;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .feed-actions button {
+    padding: 5px 11px;
+    min-height: 32px;
+    font-size: 0.76rem;
+  }
+
+  /* 8. Lector de Capítulos en Celular */
+  .reader-top-bar {
+    padding: 8px 10px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .reader-icon-btn {
+    padding: 5px 9px;
+    min-height: 34px;
+    font-size: 0.78rem;
+  }
+
+  .reader-title-info {
+    flex: 1;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .reader-title-info strong {
+    font-size: 0.82rem;
+    max-width: 52vw;
+  }
+
+  .reader-title-info span {
+    font-size: 0.7rem;
+  }
+
+  .reader-top-controls {
+    width: 100%;
+    justify-content: space-between;
+    gap: 4px;
+    padding-top: 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .reader-chip-btn {
+    padding: 4px 8px;
+    min-height: 30px;
+    font-size: 0.72rem;
+    flex: 1;
+    text-align: center;
+  }
+
+  .zoom-controls {
+    height: 30px;
+  }
+
+  .reader-zoom-btn {
+    width: 28px;
+    height: 30px;
+    font-size: 0.9rem;
+  }
+
+  .reader-bottom-bar {
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
+    gap: 6px;
+  }
+
+  .reader-nav-btn {
+    padding: 6px 11px;
+    min-height: 36px;
+    font-size: 0.78rem;
+  }
+
+  /* 9. Botón flotante de retroceso compacto en móvil */
+  .floating-back-fab {
+    bottom: calc(var(--mobile-nav-height) + 12px);
+    left: 12px;
+    padding: 7px 13px;
+    font-size: 0.78rem;
+  }
+
+  /* 10. Modales adaptados a pantalla móvil */
+  .modal-backdrop {
+    padding: 10px;
+    align-items: flex-end;
+  }
+
+  .modal-card {
+    padding: 16px;
+    border-radius: 16px 16px 12px 12px;
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+}
+
+/* Ajustes adicionales para pantallas muy pequeñas (320px - 375px) */
+@media (max-width: 380px) {
+  .series-grid.compact-shelf {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px 6px;
+  }
+
+  .tachi-poster-title {
+    font-size: 0.71rem;
+  }
+
+  .tachi-poster-sub {
+    display: none;
+  }
+
+  .header-title-group h1 {
+    max-width: 38vw;
+    font-size: 0.98rem;
+  }
+}
